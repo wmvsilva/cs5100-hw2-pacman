@@ -1,6 +1,8 @@
 package entrants.pacman.silvaw;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import pacman.controllers.PacmanController;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
@@ -54,10 +56,12 @@ public class MyPacManAStar extends PacmanController
             int randomUnvisitedNodeIndex = findRandomUnvisitedNode();
 
             // TODO Implement shortest path with A*
-            int[] path = game.getShortestPath(pacmanCurrentNodeIndex, randomUnvisitedNodeIndex);
+            Integer[] path = getShortestPath(pacmanCurrentNodeIndex, randomUnvisitedNodeIndex, game);
             for (Integer nodeIndex : path) {
                 pathQueue.add(nodeIndex);
             }
+            // Rip off first path queue
+            pathQueue.remove();
             System.out.println(pathQueue);
             // Follow path
             return nodeToMove(pathQueue.remove(), game);
@@ -67,6 +71,84 @@ public class MyPacManAStar extends PacmanController
             // Follow path
             return nodeToMove(pathQueue.remove(), game);
         }
+    }
+
+    private Integer[] getShortestPath(int fromNodeIndex, int toNodeIndex, Game game)
+    {
+        Node[] graph = game.getCurrentMaze().graph;
+
+
+        Set<Integer> closedSet = Sets.newHashSet();
+        Set<Integer> openSet = Sets.newHashSet(fromNodeIndex);
+        Map<Integer, Integer> cameFrom = new HashMap<>();
+
+        Map<Integer, Integer> gScore = new HashMap<>();
+        gScore.put(fromNodeIndex, 0);
+        Map<Integer, Integer> fScore = new HashMap<>();
+        fScore.put(fromNodeIndex, heuristic_cost_estimate(fromNodeIndex, toNodeIndex, game));
+
+        while (!openSet.isEmpty()) {
+            int currentNodeIndex = nodeWithLowestFScore(openSet, fScore);
+            if (currentNodeIndex == toNodeIndex) {
+                return reconstruct_path(cameFrom, currentNodeIndex);
+            }
+
+            openSet.remove(currentNodeIndex);
+            closedSet.add(currentNodeIndex);
+            for (int neighbor : graph[currentNodeIndex].neighbourhood.values()) {
+                if (closedSet.contains(neighbor)) {
+                    continue;
+                }
+                int tentative_gScore = gScore.get(currentNodeIndex) + 1;
+                if (!openSet.contains(neighbor)) {
+                    openSet.add(neighbor);
+                }
+                else if (tentative_gScore >= gScore.get(neighbor)) {
+                    continue;
+                }
+
+                cameFrom.put(neighbor, currentNodeIndex);
+                gScore.put(neighbor, tentative_gScore);
+                fScore.put(neighbor, gScore.get(neighbor) + heuristic_cost_estimate(neighbor, toNodeIndex, game));
+            }
+        }
+
+        throw new RuntimeException("Failure");
+    }
+
+    private int heuristic_cost_estimate(int toNode, int goalNode, Game game)
+    {
+        return game.getManhattanDistance(toNode, goalNode);
+    }
+
+    private int nodeWithLowestFScore(Set<Integer> openSet, Map<Integer, Integer> fScore)
+    {
+        Optional<Integer> result = Optional.absent();
+        Optional<Integer> lowestFScore = Optional.absent();
+
+        for (int node : openSet) {
+            if (!result.isPresent()) {
+                result = Optional.of(node);
+                lowestFScore = Optional.of(fScore.get(node));
+            } else if (fScore.get(node) < lowestFScore.get()) {
+                result = Optional.of(node);
+                lowestFScore = Optional.of(fScore.get(node));
+            }
+        }
+
+        return result.get();
+    }
+
+    private Integer[] reconstruct_path(Map<Integer, Integer> cameFrom, int givenCurrent)
+    {
+        int current = givenCurrent;
+        List<Integer> totalPath = Lists.newArrayList(current);
+        while (cameFrom.containsKey(current)) {
+            current = cameFrom.get(current);
+            totalPath.add(current);
+        }
+        totalPath = Lists.reverse(totalPath);
+        return totalPath.toArray(new Integer[totalPath.size()]);
     }
 
     private int findRandomUnvisitedNode()
