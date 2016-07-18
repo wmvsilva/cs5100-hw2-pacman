@@ -11,73 +11,99 @@ import java.util.Deque;
 import java.util.Map;
 
 /**
- * Pacman controller which uses depth-first search with the whole maze as the graph
- * to be traversed. Clearly, ghosts are ignored.
- * The DFS is reset if Pacman dies.
+ * PacMan controller which uses depth-first search with the whole maze as the graph
+ * to be traversed. Ghosts, pills, and power pills are ignored.
+ *
+ * The DFS is reset if PacMan is eaten by a ghost, so PacMan will try the same path again if she is eaten.
  */
 public class MyPacManDFS extends PacmanController {
+    /**
+     * Has the stack of nodes and array of visited nodes been initialized?
+     */
     private boolean initialized = false;
+    /**
+     * Stack of nodes used with DFS to backtrack
+     */
     private Deque<Node> nodeStack;
-    private boolean[] marked;
+    /**
+     * Array of booleans answering if the node matching the position in the array has been visited by PacMan
+     */
+    private boolean[] visited;
 
+    /**
+     * PacMan will move in such a way that she will perform a DFS of the game board, with the DFS resetting upon
+     * her death
+     *
+     * @param game a copy of the current game
+     * @param timeDue the time the next move is due
+     * @return the move to be used by PacMan
+     */
+    @Override
     public MOVE getMove(Game game, long timeDue) {
-        // Initialize the game if never initialized or Pacman has died
+        // Initialize the game if never initialized or re-initialize if PacMan has died
         if (!initialized || game.wasPacManEaten()) {
             initialize(game);
             initialized = true;
         }
 
         // Look at vertex on top of stack. Look at all vertexes that have not been visited
-        Node n = nodeStack.peek();
-        Optional<Map.Entry<MOVE, Integer>> nextNode = retrieveUnvisitedAdjacentNode(n);
+        Node curNode = nodeStack.peek();
+        // Find a neighboring unvisited node if it exists
+        Optional<Map.Entry<MOVE, Integer>> nextNodeOptional = retrieveUnvisitedAdjacentNode(curNode);
 
-        MOVE myMove;
-        if (nextNode.isPresent()) {
-            marked[nextNode.get().getValue()] = true;
-            nodeStack.push(game.getCurrentMaze().graph[nextNode.get().getValue()]);
-            myMove = nextNode.get().getKey();
+        if (nextNodeOptional.isPresent()) {
+            // If there is unvisited neighboring node, visit it and move to it
+            Map.Entry<MOVE, Integer> nextNode = nextNodeOptional.get();
+            visited[nextNode.getValue()] = true;
+            nodeStack.push(game.getCurrentMaze().graph[nextNode.getValue()]);
+            return nextNode.getKey();
         } else {
+            // If no unvisited neighboring node, move back to previous node
             nodeStack.pop();
-            // Move back to old node
-            myMove = findMoveToGetBackTo(n, nodeStack.peek());
+            return findMoveToNeighborNode(curNode, nodeStack.peek());
         }
-
-        return myMove;
     }
 
+    /**
+     * Initializes the stack containing the node path followed and the array describing what nodes have been visited
+     *
+     * @param game the current state of the game
+     */
     private void initialize(Game game)
     {
-        int pacmanCurrentNodeIndex = game.getPacmanCurrentNodeIndex();
         Node[] mazeGraph = game.getCurrentMaze().graph;
-        Node pacNode = mazeGraph[pacmanCurrentNodeIndex];
-
-        // Make stack
         nodeStack = new ArrayDeque<>();
-        // Add current node
+        visited = new boolean[mazeGraph.length];
+
+        Node pacNode = mazeGraph[game.getPacmanCurrentNodeIndex()];
+        // Start the search from the current node and mark it as visited
         nodeStack.push(pacNode);
-        // Mark node as visited
-        marked = new boolean[mazeGraph.length];
-        marked[pacNode.nodeIndex] = true;
+        visited[pacNode.nodeIndex] = true;
     }
 
-    private Optional<Map.Entry<MOVE, Integer>> retrieveUnvisitedAdjacentNode(Node node)
+    /**
+     * @param n node to find an unvisited neighboring node of
+     * @return pair describing the move to get to the node and the node number
+     */
+    private Optional<Map.Entry<MOVE, Integer>> retrieveUnvisitedAdjacentNode(Node n)
     {
-        for (Map.Entry<MOVE, Integer> moveNeighbor : node.neighbourhood.entrySet()) {
-            if (!marked[moveNeighbor.getValue()]) {
-                return Optional.of(moveNeighbor);
+        for (Map.Entry<MOVE, Integer> moveNodeNumberEntry : n.neighbourhood.entrySet()) {
+            if (!visited[moveNodeNumberEntry.getValue()]) {
+                return Optional.of(moveNodeNumberEntry);
             }
         }
         return Optional.absent();
     }
 
-    private MOVE findMoveToGetBackTo(Node current, Node old)
+    private MOVE findMoveToNeighborNode(Node fromNode, Node neighboringToNode)
     {
-        for (Map.Entry<MOVE, Integer> moveNeighbor : current.neighbourhood.entrySet()) {
-            if (old.nodeIndex == moveNeighbor.getValue()) {
-                return moveNeighbor.getKey();
+        for (Map.Entry<MOVE, Integer> moveNodeNumberEntry : fromNode.neighbourhood.entrySet()) {
+            if (neighboringToNode.nodeIndex == moveNodeNumberEntry.getValue()) {
+                return moveNodeNumberEntry.getKey();
             }
         }
 
-        throw new RuntimeException("Old node not found");
+        throw new RuntimeException(String.format("Node %s was not a neighbor of node %s", neighboringToNode.nodeIndex,
+                fromNode.nodeIndex));
     }
 }
