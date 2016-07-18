@@ -6,9 +6,10 @@ import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 import pacman.game.internal.Node;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.Map;
+import java.util.Stack;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * PacMan controller which uses depth-first search with the whole maze as the graph
@@ -24,7 +25,7 @@ public class MyPacManDFS extends PacmanController {
     /**
      * Stack of nodes used with DFS to backtrack
      */
-    private Deque<Node> nodeStack;
+    private Stack<Node> nodeStack;
     /**
      * Array of booleans answering if the node matching the position in the array has been visited by PacMan
      */
@@ -49,14 +50,15 @@ public class MyPacManDFS extends PacmanController {
         // Look at vertex on top of stack. Look at all vertexes that have not been visited
         Node curNode = nodeStack.peek();
         // Find a neighboring unvisited node if it exists
-        Optional<Map.Entry<MOVE, Integer>> nextNodeOptional = retrieveUnvisitedAdjacentNode(curNode);
+        Optional<MoveNodeIndexPair> nextNodeOptional = retrieveUnvisitedAdjacentNode(curNode);
 
         if (nextNodeOptional.isPresent()) {
             // If there is unvisited neighboring node, visit it and move to it
-            Map.Entry<MOVE, Integer> nextNode = nextNodeOptional.get();
-            visited[nextNode.getValue()] = true;
-            nodeStack.push(game.getCurrentMaze().graph[nextNode.getValue()]);
-            return nextNode.getKey();
+            MoveNodeIndexPair nextNode = nextNodeOptional.get();
+
+            visited[nextNode.getNodeIndex()] = true;
+            nodeStack.push(game.getCurrentMaze().graph[nextNode.getNodeIndex()]);
+            return nextNode.getMove();
         } else {
             // If no unvisited neighboring node, move back to previous node
             nodeStack.pop();
@@ -72,7 +74,7 @@ public class MyPacManDFS extends PacmanController {
     private void initialize(Game game)
     {
         Node[] mazeGraph = game.getCurrentMaze().graph;
-        nodeStack = new ArrayDeque<>();
+        nodeStack = new Stack<>();
         visited = new boolean[mazeGraph.length];
 
         Node pacNode = mazeGraph[game.getPacmanCurrentNodeIndex()];
@@ -85,25 +87,68 @@ public class MyPacManDFS extends PacmanController {
      * @param n node to find an unvisited neighboring node of
      * @return pair describing the move to get to the node and the node number
      */
-    private Optional<Map.Entry<MOVE, Integer>> retrieveUnvisitedAdjacentNode(Node n)
+    private Optional<MoveNodeIndexPair> retrieveUnvisitedAdjacentNode(Node n)
     {
         for (Map.Entry<MOVE, Integer> moveNodeNumberEntry : n.neighbourhood.entrySet()) {
-            if (!visited[moveNodeNumberEntry.getValue()]) {
-                return Optional.of(moveNodeNumberEntry);
+            MoveNodeIndexPair moveNodeIndexPair = new MoveNodeIndexPair(moveNodeNumberEntry.getKey(),
+                    moveNodeNumberEntry.getValue());
+
+            if (!visited[moveNodeIndexPair.getNodeIndex()]) {
+                return Optional.of(moveNodeIndexPair);
             }
         }
+
         return Optional.absent();
     }
 
+    /**
+     * @param fromNode node which a move must be found from
+     * @param neighboringToNode the node which the move will move PacMan to from the fromNode
+     * @return a move that would move PacMan on the fromNode to the given neighboring node
+     */
     private MOVE findMoveToNeighborNode(Node fromNode, Node neighboringToNode)
     {
         for (Map.Entry<MOVE, Integer> moveNodeNumberEntry : fromNode.neighbourhood.entrySet()) {
-            if (neighboringToNode.nodeIndex == moveNodeNumberEntry.getValue()) {
-                return moveNodeNumberEntry.getKey();
+            MoveNodeIndexPair moveNodeIndexPair = new MoveNodeIndexPair(moveNodeNumberEntry.getKey(),
+                    moveNodeNumberEntry.getValue());
+
+            if (neighboringToNode.nodeIndex == moveNodeIndexPair.getNodeIndex()) {
+                return moveNodeIndexPair.getMove();
             }
         }
 
         throw new RuntimeException(String.format("Node %s was not a neighbor of node %s", neighboringToNode.nodeIndex,
                 fromNode.nodeIndex));
+    }
+
+    /**
+     * Pair containing a MOVE action which should lead to the node with the given index
+     */
+    private static class MoveNodeIndexPair
+    {
+        /**
+         * Move action which should lead to the node with the given index
+         */
+        private MOVE move;
+        /**
+         * The node that the given mode should lead to
+         */
+        private int nodeIndex;
+
+        MoveNodeIndexPair(MOVE move, int nodeIndex)
+        {
+            this.move = checkNotNull(move);
+            this.nodeIndex = checkNotNull(nodeIndex);
+        }
+        
+        MOVE getMove()
+        {
+            return move;
+        }
+
+        int getNodeIndex()
+        {
+            return nodeIndex;
+        }
     }
 }
