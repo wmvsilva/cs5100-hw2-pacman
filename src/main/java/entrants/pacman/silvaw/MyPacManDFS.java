@@ -15,6 +15,50 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * to be traversed. Ghosts, pills, and power pills are ignored.
  *
  * The DFS is reset if PacMan is eaten by a ghost, so PacMan will try the same path again if she is eaten.
+ *
+ * For complexity calculations, |E| is the number of edges on the PacMan graph and |N| is the number of nodes on the
+ * PacMan graph.
+ *
+ * Time Complexity (assuming PacMan doesn't die):
+ * My code has the following steps.
+ * 1. Initialization
+ *    Constant time operations as well as initializing some maps which represent the graph.
+ *    To create these maps, I take every node and its incident edges and place them into the maps.
+ *    A constant time operation is performed for every edge connection both ways for a total of 2|E| operations.
+ * 2a. Attempt to find an unvisited node on the current node. To do this, edges leading to visited nodes are checked
+ *     and removed. Given that every edge both ways has to be removed, we will do this 2|E| times.
+ * 2b. If unvisited node found, we put it on stack and say its visited. We do have to say every node is visited
+ *     for a total of |N| operations.
+ *     Else, we move back to the previous node by popping off the stack. For every node DFS traverses, it has to
+ *     eventually come off the stack. This is a total of |N| operations.
+ *
+ * The total number of operations is:
+ * 2|E| + 2|E| + |N| + |N|
+ * = 4|E| + 2|N|
+ * = O(E) + O(N)
+ * = O(E+N)
+ *
+ * The time complexity is O(E+N).
+ *
+ * ===
+ *
+ * Space Complexity (assuming PacMan doesn't die):
+ * My code has the following steps:
+ * 1. Initialization
+ *    A map is created to better represent the graph. This requires an entry for every edge both ways for 2|E| space.
+ *    Another similar map is created for another 2|E| space.
+ * 2. We store what nodes have been visited as well as a stack of nodes. Eventually all nodes will be visited and the
+ *    stack could very well hold all nodes. This requires 2|N| of space.
+ * The total number of operations is:
+ * 2|E| + 2|E| + |N| + |N|
+ * = 4|E| + 2|N|
+ * = O(E) + O(N)
+ * = O(E+N)
+ *
+ * The space complexity is O(E+N). One could also argue that it is just O(N) because my initial map operations could be
+ * considered pre-processing to solve the actual problem. If the graph had a better initial representation, the space
+ * complexity is O(N).
+ *
  */
 public class MyPacManDFS extends PacmanController {
     /**
