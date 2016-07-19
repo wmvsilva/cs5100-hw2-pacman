@@ -30,6 +30,7 @@ public class MyPacManDFS extends PacmanController {
      */
     private Set<Integer> visited;
     private Map<Integer, Map<Integer, MOVE>> nodeToReverseUntraveledNeighborhood;
+    private Map<Integer, Map<Integer, MOVE>> nodeToReverseNeighborHood;
 
     /**
      * PacMan will move in such a way that she will perform a DFS of the game board, with the DFS resetting upon
@@ -76,6 +77,7 @@ public class MyPacManDFS extends PacmanController {
         Node[] mazeGraph = game.getCurrentMaze().graph;
         nodeStack = new Stack<>();
         nodeToReverseUntraveledNeighborhood = new HashMap<>();
+        nodeToReverseNeighborHood = new HashMap<>();
         visited = new HashSet<>();
 
         for (Node n : mazeGraph) {
@@ -84,6 +86,7 @@ public class MyPacManDFS extends PacmanController {
                 reverseNeighborhood.put(entry.getValue(), entry.getKey());
             }
             nodeToReverseUntraveledNeighborhood.put(n.nodeIndex, reverseNeighborhood);
+            nodeToReverseNeighborHood.put(n.nodeIndex, new HashMap<>(reverseNeighborhood));
         }
 
         Node pacNode = mazeGraph[game.getPacmanCurrentNodeIndex()];
@@ -125,17 +128,7 @@ public class MyPacManDFS extends PacmanController {
      */
     private MOVE findMoveToNeighborNode(Node fromNode, Node neighboringToNode)
     {
-        for (Map.Entry<MOVE, Integer> moveNodeNumberEntry : fromNode.neighbourhood.entrySet()) {
-            MoveNodeIndexPair moveNodeIndexPair = new MoveNodeIndexPair(moveNodeNumberEntry.getKey(),
-                    moveNodeNumberEntry.getValue());
-
-            if (neighboringToNode.nodeIndex == moveNodeIndexPair.getNodeIndex()) {
-                return moveNodeIndexPair.getMove();
-            }
-        }
-
-        throw new RuntimeException(String.format("Node %s was not a neighbor of node %s", neighboringToNode.nodeIndex,
-                fromNode.nodeIndex));
+        return nodeToReverseNeighborHood.get(fromNode.nodeIndex).get(neighboringToNode.nodeIndex);
     }
 
     /**
