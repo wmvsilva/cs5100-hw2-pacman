@@ -11,9 +11,9 @@ import pacman.game.internal.Node;
 import java.util.*;
 
 /**
- * Pacman controller which uses depth-first search with the whole maze as the graph
- * to be traversed. Clearly, ghosts are ignored.
- * The DFS is reset if Pacman dies.
+ * PacMan controller which uses A* search to find a path to a random unvisited node over and over.
+ * Ghosts, pills, and power pills are ignored. If PacMan dies, A* simply finds a new random unvisited node and begins
+ * again.
  */
 public class MyPacManAStar extends PacmanController
 {
@@ -21,12 +21,6 @@ public class MyPacManAStar extends PacmanController
     private boolean initialized = false;
     private boolean[] marked;
     private int lastMove = -99;
-
-    private void initialize(Game game)
-    {
-        Node[] mazeGraph = game.getCurrentMaze().graph;
-        marked = new boolean[mazeGraph.length];
-    }
 
     public MOVE getMove(Game game, long timeDue)
     {
@@ -48,18 +42,13 @@ public class MyPacManAStar extends PacmanController
         marked[game.getPacmanCurrentNodeIndex()] = true;
         if (pathQueue.isEmpty()) {
             // Create random path to follow
-            int pacmanCurrentNodeIndex = game.getPacmanCurrentNodeIndex();
-            Node[] mazeGraph = game.getCurrentMaze().graph;
-            // From node
-            Node pacNode = mazeGraph[pacmanCurrentNodeIndex];
+            int pacManCurrentNodeIndex = game.getPacmanCurrentNodeIndex();
             // Find random unvisited node
             int randomUnvisitedNodeIndex = findRandomUnvisitedNode();
 
-            // TODO Implement shortest path with A*
-            Integer[] path = getShortestPath(pacmanCurrentNodeIndex, randomUnvisitedNodeIndex, game);
-            for (Integer nodeIndex : path) {
-                pathQueue.add(nodeIndex);
-            }
+            Integer[] path = getShortestPath(pacManCurrentNodeIndex, randomUnvisitedNodeIndex, game);
+            Collections.addAll(pathQueue, path);
+
             // Rip off first path queue
             pathQueue.remove();
             System.out.println(pathQueue);
@@ -71,6 +60,12 @@ public class MyPacManAStar extends PacmanController
             // Follow path
             return nodeToMove(pathQueue.remove(), game);
         }
+    }
+
+    private void initialize(Game game)
+    {
+        Node[] mazeGraph = game.getCurrentMaze().graph;
+        marked = new boolean[mazeGraph.length];
     }
 
     private Integer[] getShortestPath(int fromNodeIndex, int toNodeIndex, Game game)
