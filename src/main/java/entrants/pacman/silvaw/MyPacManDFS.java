@@ -6,10 +6,7 @@ import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 import pacman.game.internal.Node;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -29,9 +26,10 @@ public class MyPacManDFS extends PacmanController {
      */
     private Stack<Node> nodeStack;
     /**
-     * Array of booleans answering if the node matching the position in the array has been visited by PacMan
+     * Set of node indexes visited by PacMan
      */
-    private Set<Integer> visited = new HashSet<>();
+    private Set<Integer> visited;
+    private Map<Integer, Map<Integer, MOVE>> nodeToReverseUntraveledNeighborhood;
 
     /**
      * PacMan will move in such a way that she will perform a DFS of the game board, with the DFS resetting upon
@@ -77,6 +75,16 @@ public class MyPacManDFS extends PacmanController {
     {
         Node[] mazeGraph = game.getCurrentMaze().graph;
         nodeStack = new Stack<>();
+        nodeToReverseUntraveledNeighborhood = new HashMap<>();
+        visited = new HashSet<>();
+
+        for (Node n : mazeGraph) {
+            Map<Integer, MOVE> reverseNeighborhood = new HashMap<>();
+            for (Map.Entry<MOVE, Integer> entry : n.neighbourhood.entrySet()) {
+                reverseNeighborhood.put(entry.getValue(), entry.getKey());
+            }
+            nodeToReverseUntraveledNeighborhood.put(n.nodeIndex, reverseNeighborhood);
+        }
 
         Node pacNode = mazeGraph[game.getPacmanCurrentNodeIndex()];
         // Start the search from the current node and mark it as visited
@@ -90,16 +98,24 @@ public class MyPacManDFS extends PacmanController {
      */
     private Optional<MoveNodeIndexPair> retrieveUnvisitedAdjacentNode(Node n)
     {
-        for (Map.Entry<MOVE, Integer> moveNodeNumberEntry : n.neighbourhood.entrySet()) {
-            MoveNodeIndexPair moveNodeIndexPair = new MoveNodeIndexPair(moveNodeNumberEntry.getKey(),
-                    moveNodeNumberEntry.getValue());
-
-            if (!visited.contains(moveNodeIndexPair.getNodeIndex())) {
-                return Optional.of(moveNodeIndexPair);
+        Map<Integer, MOVE> reverseUnvisitedNeighborhood = nodeToReverseUntraveledNeighborhood.get(n.nodeIndex);
+        Set<Integer> unvisitedNodes = reverseUnvisitedNeighborhood.keySet();
+        if (unvisitedNodes.isEmpty()) {
+            return Optional.absent();
+        } else {
+            Set<Integer> unvisitedEdgesToRemove = new HashSet<>();
+            for (Integer unvisitedNode : unvisitedNodes) {
+                if (!visited.contains(unvisitedNode)) {
+                    unvisitedNodes.removeAll(unvisitedEdgesToRemove);
+                    return Optional.of(new MoveNodeIndexPair(reverseUnvisitedNeighborhood.get(unvisitedNode),
+                            unvisitedNode));
+                } else {
+                    unvisitedEdgesToRemove.add(unvisitedNode);
+                }
             }
+            unvisitedNodes.removeAll(unvisitedEdgesToRemove);
+            return Optional.absent();
         }
-
-        return Optional.absent();
     }
 
     /**
