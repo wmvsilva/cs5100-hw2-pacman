@@ -17,15 +17,33 @@ import java.util.*;
  */
 public class MyPacManAStar extends PacmanController
 {
-    private Queue<Integer> pathQueue = new LinkedList<>();
+    /**
+     * Queue containing the node path computing by A* that PacMan should follow
+     */
+    private Queue<Integer> pathQueue;
+    /**
+     * Has the node path queue and array of visited nodes been initialized?
+     */
     private boolean initialized = false;
-    private boolean[] marked;
+    /**
+     * The value of each index i in this node answers if node with index i has been visited
+     */
+    private boolean[] visited;
+    /**
+     * The last move completed by PacMan. Default -99 shows impossible starting move.
+     */
     private int lastMove = -99;
 
+    /**
+     * @param game a copy of the current game
+     * @param timeDue the time that the move is due
+     * @return a move for PacMan such that PacMan will follow an A* path to a random unvisited node over and over
+     */
     public MOVE getMove(Game game, long timeDue)
     {
         if (lastMove == game.getPacmanCurrentNodeIndex()) {
-            System.out.println("DID NOT MOVE???");
+            // For some reason, when PacMan dies and there is a game over, PacMan does not move but another getMove
+            // call occurs. The game logic expects PacMan to be in a certain location so return here if that happens.
             return MOVE.NEUTRAL;
         }
         lastMove = game.getPacmanCurrentNodeIndex();
@@ -34,58 +52,69 @@ public class MyPacManAStar extends PacmanController
             initialize(game);
             initialized = true;
         }
-        // Pac man died? Clear the path from before...
+        // Pac man died? Don't keep trying to follow the old A* path...
         if (game.wasPacManEaten()) {
             pathQueue.clear();
         }
-        // Node is visited
-        marked[game.getPacmanCurrentNodeIndex()] = true;
-        if (pathQueue.isEmpty()) {
-            // Create random path to follow
-            int pacManCurrentNodeIndex = game.getPacmanCurrentNodeIndex();
-            // Find random unvisited node
-            int randomUnvisitedNodeIndex = findRandomUnvisitedNode();
 
+        // Mark current node as visited
+        visited[game.getPacmanCurrentNodeIndex()] = true;
+        if (pathQueue.isEmpty()) {
+            // The A* path was followed, create a new path to follow
+
+            int randomUnvisitedNodeIndex = findRandomUnvisitedNode();
+            int pacManCurrentNodeIndex = game.getPacmanCurrentNodeIndex();
+            // Use A* to create path to some random unvisited node
             Integer[] path = getShortestPath(pacManCurrentNodeIndex, randomUnvisitedNodeIndex, game);
             Collections.addAll(pathQueue, path);
 
-            // Rip off first path queue
+            // The HEAD of the queue is the current node. This should be removed.
             pathQueue.remove();
-            System.out.println(pathQueue);
-            // Follow path
+            // Start following the path...
             return nodeToMove(pathQueue.remove(), game);
         } else {
-            System.out.println("Currently on " + game.getPacmanCurrentNodeIndex());
-            System.out.println(pathQueue.peek());
-            // Follow path
+            // Continue following the path
             return nodeToMove(pathQueue.remove(), game);
         }
     }
 
+    /**
+     * Initialize the variables needed for this class to function
+     *
+     * @param game a copy of the current game
+     */
     private void initialize(Game game)
     {
         Node[] mazeGraph = game.getCurrentMaze().graph;
-        marked = new boolean[mazeGraph.length];
+        visited = new boolean[mazeGraph.length];
+        pathQueue = new LinkedList<>();
     }
 
+    /**
+     * @param fromNodeIndex the node to start the path
+     * @param toNodeIndex the node to get ot
+     * @param game a copy of the current game
+     * @return a list of node indices representing a path from fromNodeIndex to toNodeIndex creating using A* search
+     */
     private Integer[] getShortestPath(int fromNodeIndex, int toNodeIndex, Game game)
     {
         Node[] graph = game.getCurrentMaze().graph;
 
-
+        // Set of nodes evaluated
         Set<Integer> closedSet = Sets.newHashSet();
+        // Set of discovered nodes to be evaluated
         Set<Integer> openSet = Sets.newHashSet(fromNodeIndex);
         Map<Integer, Integer> cameFrom = new HashMap<>();
 
         Map<Integer, Integer> gScore = new HashMap<>();
         gScore.put(fromNodeIndex, 0);
         Map<Integer, Integer> fScore = new HashMap<>();
-        fScore.put(fromNodeIndex, heuristic_cost_estimate(fromNodeIndex, toNodeIndex, game));
+        fScore.put(fromNodeIndex, heuristicCostEstimate(fromNodeIndex, toNodeIndex, game));
 
         while (!openSet.isEmpty()) {
             int currentNodeIndex = nodeWithLowestFScore(openSet, fScore);
             if (currentNodeIndex == toNodeIndex) {
-                return reconstruct_path(cameFrom, currentNodeIndex);
+                return reconstructPath(cameFrom, currentNodeIndex);
             }
 
             openSet.remove(currentNodeIndex);
@@ -104,14 +133,14 @@ public class MyPacManAStar extends PacmanController
 
                 cameFrom.put(neighbor, currentNodeIndex);
                 gScore.put(neighbor, tentative_gScore);
-                fScore.put(neighbor, gScore.get(neighbor) + heuristic_cost_estimate(neighbor, toNodeIndex, game));
+                fScore.put(neighbor, gScore.get(neighbor) + heuristicCostEstimate(neighbor, toNodeIndex, game));
             }
         }
 
         throw new RuntimeException("Failure");
     }
 
-    private int heuristic_cost_estimate(int toNode, int goalNode, Game game)
+    private int heuristicCostEstimate(int toNode, int goalNode, Game game)
     {
         return game.getManhattanDistance(toNode, goalNode);
     }
@@ -134,7 +163,7 @@ public class MyPacManAStar extends PacmanController
         return result.get();
     }
 
-    private Integer[] reconstruct_path(Map<Integer, Integer> cameFrom, int givenCurrent)
+    private Integer[] reconstructPath(Map<Integer, Integer> cameFrom, int givenCurrent)
     {
         int current = givenCurrent;
         List<Integer> totalPath = Lists.newArrayList(current);
@@ -146,19 +175,27 @@ public class MyPacManAStar extends PacmanController
         return totalPath.toArray(new Integer[totalPath.size()]);
     }
 
+    /**
+     * @return node index of an unvisited node
+     */
     private int findRandomUnvisitedNode()
     {
         List<Integer> unvisitedNodes = new LinkedList<>();
-        for (int i = 0; i < marked.length; i++) {
-            if (!marked[i]) {
+        for (int i = 0; i < visited.length; i++) {
+            if (!visited[i]) {
                 unvisitedNodes.add(i);
             }
         }
-        // Find random in set
+        // Find random in list
         Random randomizer = new Random();
         return unvisitedNodes.get(randomizer.nextInt(unvisitedNodes.size()));
     }
 
+    /**
+     * @param nodeIndex node to move to from current node
+     * @param game copy of the current game
+     * @return the move to get to the given nodeIndex from the PacMan's current node
+     */
     private MOVE nodeToMove(int nodeIndex, Game game)
     {
         Node currentNode = game.getCurrentMaze().graph[game.getPacmanCurrentNodeIndex()];
@@ -168,6 +205,7 @@ public class MyPacManAStar extends PacmanController
             }
         }
 
-        throw new RuntimeException("PATH NOT FOUND");
+        throw new RuntimeException("Node " + nodeIndex + " was not a neighbor of " +
+                currentNode.nodeIndex);
     }
 }
