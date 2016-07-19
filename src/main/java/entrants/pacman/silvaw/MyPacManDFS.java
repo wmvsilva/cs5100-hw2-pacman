@@ -60,7 +60,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * complexity is O(N).
  *
  */
-public class MyPacManDFS extends PacmanController {
+public class MyPacManDFS extends PacmanController
+{
     /**
      * Has the stack of nodes and array of visited nodes been initialized?
      */
@@ -73,7 +74,16 @@ public class MyPacManDFS extends PacmanController {
      * Set of node indexes visited by PacMan
      */
     private Set<Integer> visited;
+    /**
+     * A map of node indexes to a map of nodes visitable by the key node to the moves necessary to get to that
+     * neighbor node from the key node. Only neighbor nodes which have not been visited should be in the value. If
+     * neighbor nodes have been visited, they are removed from the neighborhood map.
+     */
     private Map<Integer, Map<Integer, MOVE>> nodeToReverseUntraveledNeighborhood;
+    /**
+     * A map of node indexes to a map of nodes visitable by the key node to the moves necessary to get to that
+     * neighbor node from the key node
+     */
     private Map<Integer, Map<Integer, MOVE>> nodeToReverseNeighborHood;
 
     /**
@@ -112,7 +122,8 @@ public class MyPacManDFS extends PacmanController {
     }
 
     /**
-     * Initializes the stack containing the node path followed and the array describing what nodes have been visited
+     * Initializes the stack containing the node path followed, set of visited nodes, and the maps describing the
+     * neighbors of each node and the moves to get to those neighbors
      *
      * @param game the current state of the game
      */
@@ -140,6 +151,10 @@ public class MyPacManDFS extends PacmanController {
     }
 
     /**
+     * Retrieves a move and a node number to an unvisited node from given node n. The
+     * nodeToReverseUntraveledNeighborhood map is maintained here and visited neighbors are removed so they do not need
+     * to be checked again.
+     *
      * @param n node to find an unvisited neighboring node of
      * @return pair describing the move to get to the node and the node number
      */
