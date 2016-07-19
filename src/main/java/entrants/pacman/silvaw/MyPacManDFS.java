@@ -6,7 +6,9 @@ import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 import pacman.game.internal.Node;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -29,7 +31,7 @@ public class MyPacManDFS extends PacmanController {
     /**
      * Array of booleans answering if the node matching the position in the array has been visited by PacMan
      */
-    private boolean[] visited;
+    private Set<Integer> visited = new HashSet<>();
 
     /**
      * PacMan will move in such a way that she will perform a DFS of the game board, with the DFS resetting upon
@@ -56,7 +58,7 @@ public class MyPacManDFS extends PacmanController {
             // If there is unvisited neighboring node, visit it and move to it
             MoveNodeIndexPair nextNode = nextNodeOptional.get();
 
-            visited[nextNode.getNodeIndex()] = true;
+            visited.add(nextNode.getNodeIndex());
             nodeStack.push(game.getCurrentMaze().graph[nextNode.getNodeIndex()]);
             return nextNode.getMove();
         } else {
@@ -75,12 +77,11 @@ public class MyPacManDFS extends PacmanController {
     {
         Node[] mazeGraph = game.getCurrentMaze().graph;
         nodeStack = new Stack<>();
-        visited = new boolean[mazeGraph.length];
 
         Node pacNode = mazeGraph[game.getPacmanCurrentNodeIndex()];
         // Start the search from the current node and mark it as visited
         nodeStack.push(pacNode);
-        visited[pacNode.nodeIndex] = true;
+        visited.add(pacNode.nodeIndex);
     }
 
     /**
@@ -93,7 +94,7 @@ public class MyPacManDFS extends PacmanController {
             MoveNodeIndexPair moveNodeIndexPair = new MoveNodeIndexPair(moveNodeNumberEntry.getKey(),
                     moveNodeNumberEntry.getValue());
 
-            if (!visited[moveNodeIndexPair.getNodeIndex()]) {
+            if (!visited.contains(moveNodeIndexPair.getNodeIndex())) {
                 return Optional.of(moveNodeIndexPair);
             }
         }
