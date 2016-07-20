@@ -14,9 +14,24 @@ import java.util.*;
  * PacMan controller which uses A* search to find a path to a random unvisited node over and over.
  * Ghosts, pills, and power pills are ignored. If PacMan dies, A* simply finds a new random unvisited node and begins
  * again.
+ *
+ * Time Complexity (assuming no PacMan death):
+ * My code does the following:
+ * 1. Initialization
+ *    The variables are initialized in constant time
+ * 2. Visit the current node. We must do this for every node for |N| operations
+ * 3. Either follow or create path
+ * 3a. Create path
+ * 3b. Follow path
+ *     This just takes a node off the queue and converts the node to a move.
  */
 public class MyPacManAStar extends PacmanController
 {
+    /**
+     * Random number producer
+     */
+    private static final Random randomizer = new Random();
+
     /**
      * Queue containing the node path computing by A* that PacMan should follow
      */
@@ -33,6 +48,11 @@ public class MyPacManAStar extends PacmanController
      * The last move completed by PacMan. Default -99 shows impossible starting move.
      */
     private int lastMove = -99;
+    /**
+     * A map of node indexes to a map of nodes visitable by the key node to the moves necessary to get to that
+     * neighbor node from the key node
+     */
+    private Map<Integer, Map<Integer, MOVE>> nodeToReverseNeighborHood;
 
     /**
      * @param game a copy of the current game
@@ -88,6 +108,15 @@ public class MyPacManAStar extends PacmanController
         Node[] mazeGraph = game.getCurrentMaze().graph;
         visited = new boolean[mazeGraph.length];
         pathQueue = new LinkedList<>();
+        nodeToReverseNeighborHood = new HashMap<>();
+
+        for (Node n : mazeGraph) {
+            Map<Integer, MOVE> reverseNeighborhood = new HashMap<>();
+            for (Map.Entry<MOVE, Integer> entry : n.neighbourhood.entrySet()) {
+                reverseNeighborhood.put(entry.getValue(), entry.getKey());
+            }
+            nodeToReverseNeighborHood.put(n.nodeIndex, new HashMap<>(reverseNeighborhood));
+        }
     }
 
     /**
@@ -187,7 +216,6 @@ public class MyPacManAStar extends PacmanController
             }
         }
         // Find random in list
-        Random randomizer = new Random();
         return unvisitedNodes.get(randomizer.nextInt(unvisitedNodes.size()));
     }
 
@@ -199,13 +227,6 @@ public class MyPacManAStar extends PacmanController
     private MOVE nodeToMove(int nodeIndex, Game game)
     {
         Node currentNode = game.getCurrentMaze().graph[game.getPacmanCurrentNodeIndex()];
-        for (Map.Entry<MOVE, Integer> entry : currentNode.neighbourhood.entrySet()) {
-            if (entry.getValue() == nodeIndex) {
-                return entry.getKey();
-            }
-        }
-
-        throw new RuntimeException("Node " + nodeIndex + " was not a neighbor of " +
-                currentNode.nodeIndex);
+        return nodeToReverseNeighborHood.get(currentNode.nodeIndex).get(nodeIndex);
     }
 }
