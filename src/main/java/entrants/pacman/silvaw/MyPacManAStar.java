@@ -15,15 +15,46 @@ import java.util.*;
  * Ghosts, pills, and power pills are ignored. If PacMan dies, A* simply finds a new random unvisited node and begins
  * again.
  *
+ * For complexity calculations, |E| is the number of edges on the PacMan graph and |N| is the number of nodes on the
+ * PacMan graph.
+ *
  * Time Complexity (assuming no PacMan death):
  * My code does the following:
  * 1. Initialization
- *    The variables are initialized in constant time
- * 2. Visit the current node. We must do this for every node for |N| operations
+ *    The variables are initialized. To make the reverse neighborhood variable, it requires an operation for every edge
+ *    in the graph for |E| operations.
+ * 2. Visit the current node. We must do this for every node in every path created.
  * 3. Either follow or create path
  * 3a. Create path
+ *     Find a random node takes constant time.
+ *     A* search-
+ *         Before the while loop, everything is initialized which takes constant time.4
+ *         The while loop uses the openSet which contains discovered nodes to be evaluated. At most, the openSet will
+ *         contain every node |N|. For every neighbor of the node with the lowest f score, some constant time
+ *         operations must be completed. At most, it will be 4 operations for each PacMan direction.
+ *         Overall, knowing the number of edges is limited, we have |N|*c*4c = O(|N|) for A* here.
+ *     Then we just start following the path which is a constant time operation.
  * 3b. Follow path
- *     This just takes a node off the queue and converts the node to a move.
+ *     This just takes a node off the queue and converts the node to a move. This will occur once for every node in
+ *     the paths produced.
+ *
+ * Analyzing the number of paths created, at most, we will have to create one to get to every node (although this is
+ * very unlikely).
+ * Therefore, for this algorithm to complete the PacMan graph, we have |E| + (|N|)(|N| + |N| + |N|) + some constant
+ * time operations for a total of |E| + 3|N|^2 + C operations.
+ * = O(N^2 + E)
+ * As with the BFS analysis, the time complexity could be O(N^2) if the initial graph representation was better.
+ *
+ * =====
+ *
+ * Space Complexity (assuming no PacMan death):
+ * My code does the following:
+ * 1. Initialization
+ *    We have a list of unvisited nodes for |N| space. Also, A* makes a path queue which is only as large as |N|.
+ * 2. A* calculation contains 5 maps. Each map will only hold as many nodes in the graph for |N| space.
+ *
+ * In total, all data objects are |N| large at most.
+ * = O(N) space complexity
  */
 public class MyPacManAStar extends PacmanController
 {
@@ -43,7 +74,7 @@ public class MyPacManAStar extends PacmanController
     /**
      * The value of each index i in this node answers if node with index i has been visited
      */
-    private boolean[] visited;
+    private List<Integer> unvisitedNodes;
     /**
      * The last move completed by PacMan. Default -99 shows impossible starting move.
      */
@@ -78,7 +109,7 @@ public class MyPacManAStar extends PacmanController
         }
 
         // Mark current node as visited
-        visited[game.getPacmanCurrentNodeIndex()] = true;
+        unvisitedNodes.remove(Integer.valueOf(game.getPacmanCurrentNodeIndex()));
         if (pathQueue.isEmpty()) {
             // The A* path was followed, create a new path to follow
 
@@ -106,7 +137,10 @@ public class MyPacManAStar extends PacmanController
     private void initialize(Game game)
     {
         Node[] mazeGraph = game.getCurrentMaze().graph;
-        visited = new boolean[mazeGraph.length];
+        unvisitedNodes = new ArrayList<>();
+        for (Node n : mazeGraph) {
+            unvisitedNodes.add(n.nodeIndex);
+        }
         pathQueue = new LinkedList<>();
         nodeToReverseNeighborHood = new HashMap<>();
 
@@ -152,16 +186,16 @@ public class MyPacManAStar extends PacmanController
                 if (closedSet.contains(neighbor)) {
                     continue;
                 }
-                int tentative_gScore = gScore.get(currentNodeIndex) + 1;
+                int tentativeGScore = gScore.get(currentNodeIndex) + 1;
                 if (!openSet.contains(neighbor)) {
                     openSet.add(neighbor);
                 }
-                else if (tentative_gScore >= gScore.get(neighbor)) {
+                else if (tentativeGScore >= gScore.get(neighbor)) {
                     continue;
                 }
 
                 cameFrom.put(neighbor, currentNodeIndex);
-                gScore.put(neighbor, tentative_gScore);
+                gScore.put(neighbor, tentativeGScore);
                 fScore.put(neighbor, gScore.get(neighbor) + heuristicCostEstimate(neighbor, toNodeIndex, game));
             }
         }
@@ -209,12 +243,6 @@ public class MyPacManAStar extends PacmanController
      */
     private int findRandomUnvisitedNode()
     {
-        List<Integer> unvisitedNodes = new LinkedList<>();
-        for (int i = 0; i < visited.length; i++) {
-            if (!visited[i]) {
-                unvisitedNodes.add(i);
-            }
-        }
         // Find random in list
         return unvisitedNodes.get(randomizer.nextInt(unvisitedNodes.size()));
     }
