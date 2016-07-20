@@ -78,41 +78,60 @@ For complexity calculations, |E| is the number of edges on the PacMan graph and 
  PacMan graph.
 
  Time Complexity (assuming no PacMan death):
+ 
  My code does the following:
+ 
  1. Initialization
     The variables are initialized. To make the reverse neighborhood variable, it requires an operation for every edge
     in the graph for |E| operations.
+    
  2. Visit the current node. We must do this for every node in every path created.
+ 
  3. Either follow or create path
+ 
  3a. Create path
+ 
      Find a random node takes constant time.
+     
      A* search-
-         Before the while loop, everything is initialized which takes constant time.4
+         Before the while loop, everything is initialized which takes constant time.
+         
          The while loop uses the openSet which contains discovered nodes to be evaluated. At most, the openSet will
          contain every node |N|. For every neighbor of the node with the lowest f score, some constant time
          operations must be completed. At most, it will be 4 operations for each PacMan direction.
+         
          Overall, knowing the number of edges is limited, we have |N|*c*4c = O(|N|) for A* here.
+         
      Then we just start following the path which is a constant time operation.
+     
  3b. Follow path
+ 
      This just takes a node off the queue and converts the node to a move. This will occur once for every node in
      the paths produced.
 
  Analyzing the number of paths created, at most, we will have to create one to get to every node (although this is
  very unlikely).
+ 
  Therefore, for this algorithm to complete the PacMan graph, we have |E| + (|N|)(|N| + |N| + |N|) + some constant
  time operations for a total of |E| + 3|N|^2 + C operations.
+ 
  = O(N^2 + E)
+ 
  As with the BFS analysis, the time complexity could be O(N^2) if the initial graph representation was better.
 
  =====
 
  Space Complexity (assuming no PacMan death):
+ 
  My code does the following:
+ 
  1) Initialization
     We have a list of unvisited nodes for |N| space. Also, A* makes a path queue which is only as large as |N|.
+    
  2) A* calculation contains 5 maps. Each map will only hold as many nodes in the graph for |N| space.
 
  In total, all data objects are |N| large at most.
+ 
  = O(N) space complexity
 
 ## Compilation Instructions
