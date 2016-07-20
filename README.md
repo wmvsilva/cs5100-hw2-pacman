@@ -108,9 +108,9 @@ For complexity calculations, |E| is the number of edges on the PacMan graph and 
 
  Space Complexity (assuming no PacMan death):
  My code does the following:
- 1. Initialization
+ 1) Initialization
     We have a list of unvisited nodes for |N| space. Also, A* makes a path queue which is only as large as |N|.
- 2. A* calculation contains 5 maps. Each map will only hold as many nodes in the graph for |N| space.
+ 2) A* calculation contains 5 maps. Each map will only hold as many nodes in the graph for |N| space.
 
  In total, all data objects are |N| large at most.
  = O(N) space complexity
@@ -118,7 +118,7 @@ For complexity calculations, |E| is the number of edges on the PacMan graph and 
 ## Compilation Instructions
 This can be compiled as a standard Maven project in any IDE.
 To run the DFS PacMan with random ghosts, run MainDFS.java.
-To run the A* PacMna with random ghosts, run MainAStar.java.
+To run the A* PacMan with random ghosts, run MainAStar.java.
 
 # Competition ReadMe
 
