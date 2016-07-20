@@ -1,8 +1,5 @@
-import entrants.pacman.silvaw.MyPacManAStar;
 import entrants.pacman.silvaw.MyPacManDFS;
-import examples.commGhosts.POCommGhosts;
 import pacman.Executor;
-import examples.poPacMan.POPacMan;
 import pacman.controllers.examples.RandomGhosts;
 
 
