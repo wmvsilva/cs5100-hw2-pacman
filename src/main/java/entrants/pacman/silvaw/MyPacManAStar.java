@@ -172,47 +172,63 @@ public class MyPacManAStar extends PacmanController
         Set<Integer> closedSet = Sets.newHashSet();
         // Set of discovered nodes to be evaluated
         Set<Integer> openSet = Sets.newHashSet(fromNodeIndex);
+        // Nodes to parent nodes
         Map<Integer, Integer> cameFrom = new HashMap<>();
 
+        // Map of node to g score (cost of getting from start node to this node)
         Map<Integer, Integer> gScore = new HashMap<>();
         gScore.put(fromNodeIndex, 0);
+        // Map of node to f score (f = g + h). Note that the heuristic is Manhattan distance
         Map<Integer, Integer> fScore = new HashMap<>();
-        fScore.put(fromNodeIndex, heuristicCostEstimate(fromNodeIndex, toNodeIndex, game));
+        fScore.put(fromNodeIndex, hCost(fromNodeIndex, toNodeIndex, game));
 
         while (!openSet.isEmpty()) {
+            // Take the node with lowest f score
             int currentNodeIndex = nodeWithLowestFScore(openSet, fScore);
             if (currentNodeIndex == toNodeIndex) {
-                return reconstructPath(cameFrom, currentNodeIndex);
+                // We found the path. Construct it from the result we've built up
+                return makePath(cameFrom, currentNodeIndex);
             }
 
+            // Move from open set to closed set
             openSet.remove(currentNodeIndex);
             closedSet.add(currentNodeIndex);
             for (int neighbor : graph[currentNodeIndex].neighbourhood.values()) {
+                // Check every neighbor for open set nodes, changing the g score if
+                // a better path is found
                 if (closedSet.contains(neighbor)) {
                     continue;
                 }
-                int tentativeGScore = gScore.get(currentNodeIndex) + 1;
+                int curGScore = gScore.get(currentNodeIndex) + 1;
                 if (!openSet.contains(neighbor)) {
                     openSet.add(neighbor);
                 }
-                else if (tentativeGScore >= gScore.get(neighbor)) {
+                else if (curGScore >= gScore.get(neighbor)) {
                     continue;
                 }
 
                 cameFrom.put(neighbor, currentNodeIndex);
-                gScore.put(neighbor, tentativeGScore);
-                fScore.put(neighbor, gScore.get(neighbor) + heuristicCostEstimate(neighbor, toNodeIndex, game));
+                gScore.put(neighbor, curGScore);
+                // f = g + h
+                fScore.put(neighbor, gScore.get(neighbor) + hCost(neighbor, toNodeIndex, game));
             }
         }
 
-        throw new RuntimeException("Failure");
+        throw new RuntimeException("Failure in A*");
     }
 
-    private int heuristicCostEstimate(int toNode, int goalNode, Game game)
+    /**
+     * Finds the manhattan distance from a node to a goal. This represents the
+     * heuristic in A*.
+     */
+    private int hCost(int toNode, int goalNode, Game game)
     {
         return game.getManhattanDistance(toNode, goalNode);
     }
 
+    /**
+     * @return the node in open set with the lowest f score
+     */
     private int nodeWithLowestFScore(Set<Integer> openSet, Map<Integer, Integer> fScore)
     {
         Optional<Integer> result = Optional.absent();
@@ -231,7 +247,12 @@ public class MyPacManAStar extends PacmanController
         return result.get();
     }
 
-    private Integer[] reconstructPath(Map<Integer, Integer> cameFrom, int givenCurrent)
+    /**
+     * @return using cameFrom's map of what nodes each node can be most efficiently
+     * reached from, produces a path until there are no parent nodes.
+     * The result is then reversed such that givenCurrent is the end node.
+     */
+    private Integer[] makePath(Map<Integer, Integer> cameFrom, int givenCurrent)
     {
         int current = givenCurrent;
         List<Integer> totalPath = Lists.newArrayList(current);
