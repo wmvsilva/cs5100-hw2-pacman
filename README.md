@@ -29,8 +29,8 @@ My code has the following steps.
 2b. If unvisited node found, we put it on stack and say its visited. We do have to say every node is visited
     for a total of |N| operations.
     
-    Else, we move back to the previous node by popping off the stack. For every node DFS traverses, it has to
-    eventually come off the stack. This is a total of |N| operations.
+Else, we move back to the previous node by popping off the stack. For every node DFS traverses, it has to
+eventually come off the stack. This is a total of |N| operations.
 
 The total number of operations is:
 
@@ -94,13 +94,11 @@ For complexity calculations, |E| is the number of edges on the PacMan graph and 
      Find a random node takes constant time.
      
      A* search-
-         Before the while loop, everything is initialized which takes constant time.
+     * Before the while loop, everything is initialized which takes constant time.
          
-         The while loop uses the openSet which contains discovered nodes to be evaluated. At most, the openSet will
-         contain every node |N|. For every neighbor of the node with the lowest f score, some constant time
-         operations must be completed. At most, it will be 4 operations for each PacMan direction.
-         
-         Overall, knowing the number of edges is limited, we have |N|*c*4c = O(|N|) for A* here.
+     * The while loop uses the openSet which contains discovered nodes to be evaluated. At most, the openSet will contain every node |N|. For every neighbor of the node with the lowest f score, some constant time operations must be completed. At most, it will be 4 operations for each PacMan direction.
+     
+     * Overall, knowing the number of edges is limited, we have |N|*c*4c = O(|N|) for A* here.
          
      Then we just start following the path which is a constant time operation.
      
