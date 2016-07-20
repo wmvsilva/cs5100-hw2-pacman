@@ -101,6 +101,11 @@ public class MyPacManDFS extends PacmanController
             initialize(game);
             initialized = true;
         }
+        if ((game.getNumberOfActivePills() == 0) && (game.getNumberOfActivePowerPills() == 0)) {
+            // Game has ended. We need to reset everything for next maze.
+            initialized = false;
+            return MOVE.NEUTRAL;
+        }
 
         // Look at vertex on top of stack. Look at all vertexes that have not been visited
         Node curNode = nodeStack.peek();

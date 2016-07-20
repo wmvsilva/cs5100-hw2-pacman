@@ -92,6 +92,11 @@ public class MyPacManAStar extends PacmanController
      */
     public MOVE getMove(Game game, long timeDue)
     {
+        if ((game.getNumberOfActivePills() == 0) && (game.getNumberOfActivePowerPills() == 0)) {
+            // Game has ended. We need to reset everything for next maze.
+            initialized = false;
+            return MOVE.NEUTRAL;
+        }
         if (lastMove == game.getPacmanCurrentNodeIndex()) {
             // For some reason, when PacMan dies and there is a game over, PacMan does not move but another getMove
             // call occurs. The game logic expects PacMan to be in a certain location so return here if that happens.
