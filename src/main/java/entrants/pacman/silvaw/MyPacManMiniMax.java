@@ -19,6 +19,48 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * looking at the total pills left, the distance to the nearest pill, the score, the distance to the nearest ghost if
  * it is 20 nodes or fewer away, and the distance of an edible ghost if it is 40 nodes or fewer away.
  *
+ * Time Complexity:
+ * My code has the following steps.
+ *
+ * 1. Create Minimax tree
+ * 1a. For every other depth for PacMan, calculate game states for possible PacMan moves and create branches for each.
+ *     Four game states are calculated. At a maximum, there could be 4 branches from this node.
+ *
+ * 1b. For every other depth for ghosts, calculate game states for possible ghost moves and create branches for each.
+ *     At a maximum, there could be 3^4 branches. The game state may be calculated for each.
+ *
+ * 1c. For each leaf, calculate heuristic. This involves getting the score, total active pills, distance to nearest
+ *     ghost, and determining the distance to the nearest pill. Getting the score and total active pills are constant
+ *     time operations. Getting the distance to the nearest ghost takes 4 constant time operations since shortest path
+ *     distances are pre-computed. Getting the distance to the nearest pill takes at most |P| constant time operations
+ *     where P is the set of all pills.
+ *
+ *     The average branching factor is (4 + 3^4)/2 = 42.5.
+ *     If b is the branching factor, for a tree, there will be b^m nodes at depth m. Therefore, a tree has
+ *     (b^0 + b^1 + b^2 + ... + b^m) nodes total. Keeping the highest order, that is O(b^m) operations for branching
+ *     factor b with tree of depth m.
+ *     Overall, we will have (42.5)^m leaves where the heuristic is calculated that uses P operations.
+ *     For each nodes at a lower depth, that requires (b^0 + b^1 + ... + b^(m-1)) that may each need to calculate
+ *     new game states. At most, 3^4 game states will need to be calculated in the case of ghosts.
+ *     This gives us a total of P(42.5)^m + (3^4)(42.5)^(m-1).
+ *     O(P(42.5)^m + (3^4)(42.5)^(m-1))
+ *     = O(P(42.5)^m)
+ *
+ * 2. Select best move using minimax tree that has (b^0 + b^1 + b^2 + ... + b^m) nodes total.
+ * 2a. If leaf, return a value.
+ *     This is a simple constant time operation that must be completed b^m times total.
+ * 2b. If node, find max value among children.
+ *     Nodes on a given depth could have b^1,b^2,..., or b^m children total. Finding the max of the children requires
+ *     looking at all the children for b^1 + b^2 + ... + b^m operations total.
+ *
+ *     Overall, this is a total of b^m + (b^1 + b^2 + ... + b^m) = O(b^m).
+ *     The average branching factor is 42.5 for O(42.5^m) for step.
+ *
+ * The total time complexity is O(P(42.5)^m) + O(42.5^m)
+ * = O(P(42.5)^m) where m is the depth of the minimax tree and P is the number of pills on a given maze. In practice,
+ * however, the branching factor will actually be much less as Pacman and the ghosts are normally stuck in corridors
+ * which will greatly limit the number of moves available.
+ *
  */
 public class MyPacManMiniMax extends PacmanController
 {
