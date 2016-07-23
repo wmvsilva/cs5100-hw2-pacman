@@ -144,8 +144,19 @@ public class MyPacManMiniMax extends PacmanController
         int distanceToInky = shortestPathDistanceToGhost(game, GHOST.INKY);
         int distanceToPinky = shortestPathDistanceToGhost(game, GHOST.PINKY);
         int distanceToSue = shortestPathDistanceToGhost(game, GHOST.SUE);
+        Map<GHOST, Integer> ghostsToDistance = new HashMap<>();
+        ghostsToDistance.put(GHOST.BLINKY, distanceToBlinky);
+        ghostsToDistance.put(GHOST.INKY, distanceToInky);
+        ghostsToDistance.put(GHOST.PINKY, distanceToPinky);
+        ghostsToDistance.put(GHOST.SUE, distanceToSue);
 
         int distanceToNearestGhost = Collections.min(Lists.newArrayList(distanceToBlinky, distanceToInky, distanceToPinky, distanceToSue));
+        GHOST nearestGhost = null;
+        for (Map.Entry<GHOST, Integer> ghostDistance : ghostsToDistance.entrySet()) {
+            if (ghostDistance.getValue() == distanceToNearestGhost) {
+                nearestGhost = ghostDistance.getKey();
+            }
+        }
 
         List<Integer> activePillIndices = new ArrayList<>();
         activePillIndices.addAll(Ints.asList(game.getActivePillsIndices()));
@@ -158,10 +169,15 @@ public class MyPacManMiniMax extends PacmanController
         int distanceToNearestPill = Collections.min(distancesToPills);
 
         int ghostScore = -500 * (20 - distanceToNearestGhost);
-        if (distanceToNearestGhost >= 20) {
+        int eatingGhostScore = 0;
+        if (distanceToNearestGhost >= 20 || game.isGhostEdible(nearestGhost)) {
             ghostScore = 0;
         }
-        return -1 * totalPills + -1 * distanceToNearestPill + 100 * score + ghostScore;
+        if (game.isGhostEdible(nearestGhost) && distanceToNearestGhost <= 40) {
+            eatingGhostScore = 50 * (40 - distanceToNearestGhost);
+        }
+        System.out.println(game.getNumGhostsEaten());
+        return -1 * totalPills + -1 * distanceToNearestPill + 100 * score + ghostScore + eatingGhostScore;
     }
 
     private int shortestPathDistanceToGhost(Game game, GHOST ghost)
