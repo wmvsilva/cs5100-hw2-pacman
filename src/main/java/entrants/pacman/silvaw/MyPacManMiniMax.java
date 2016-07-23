@@ -166,7 +166,10 @@ public class MyPacManMiniMax extends PacmanController
         for (int pillIndice : activePillIndices) {
             distancesToPills.add(game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), pillIndice));
         }
-        int distanceToNearestPill = Collections.min(distancesToPills);
+        int distanceToNearestPill = 0;
+        if (!distancesToPills.isEmpty()) {
+            distanceToNearestPill = Collections.min(distancesToPills);
+        }
 
         int ghostScore = -500 * (20 - distanceToNearestGhost);
         int eatingGhostScore = 0;
@@ -176,7 +179,6 @@ public class MyPacManMiniMax extends PacmanController
         if (game.isGhostEdible(nearestGhost) && distanceToNearestGhost <= 40) {
             eatingGhostScore = 50 * (40 - distanceToNearestGhost);
         }
-        System.out.println(game.getNumGhostsEaten());
         return -1 * totalPills + -1 * distanceToNearestPill + 100 * score + ghostScore + eatingGhostScore;
     }
 
