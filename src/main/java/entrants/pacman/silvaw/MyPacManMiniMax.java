@@ -157,7 +157,11 @@ public class MyPacManMiniMax extends PacmanController
         }
         int distanceToNearestPill = Collections.min(distancesToPills);
 
-        return -1 * totalPills + distanceToNearestGhost + -1 * distanceToNearestPill + score;
+        int ghostScore = -500 * (20 - distanceToNearestGhost);
+        if (distanceToNearestGhost >= 20) {
+            ghostScore = 0;
+        }
+        return -1 * totalPills + -1 * distanceToNearestPill + 100 * score + ghostScore;
     }
 
     private int shortestPathDistanceToGhost(Game game, GHOST ghost)
