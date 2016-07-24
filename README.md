@@ -33,31 +33,47 @@ My code has the following steps.
     distances are pre-computed. Getting the distance to the nearest pill takes at most |P| constant time operations
     where P is the set of all pills.
 
-    The average branching factor is (4 + 3^4)/2 = 42.5.
-    If b is the branching factor, for a tree, there will be b^m nodes at depth m. Therefore, a tree has
-    (b^0 + b^1 + b^2 + ... + b^m) nodes total. Keeping the highest order, that is O(b^m) operations for branching
-    factor b with tree of depth m.
-    Overall, we will have (42.5)^m leaves where the heuristic is calculated that uses P operations.
-    For each nodes at a lower depth, that requires (b^0 + b^1 + ... + b^(m-1)) that may each need to calculate
-    new game states. At most, 3^4 game states will need to be calculated in the case of ghosts.
-    This gives us a total of P(42.5)^m + (3^4)(42.5)^(m-1).
-    O(P(42.5)^m + (3^4)(42.5)^(m-1))
-    = O(P(42.5)^m)
+    The branching factor alternates at every other depth. The first branching factor is a maximum of 4 while the
+    second is a maximum of 3^4.
+    Depth 0 will have 1 node, 1 will have 1*4 nodes, 2 will have (1*4)*3^4 nodes, 3 will have (1*4*3^4)* 4 nodes and
+    so on... The total number of nodes will be 1 + 4 + (3^4)*4 + 4*(3^4)*4 + (3^4)*4*(3^4)*4 + ...
 
-2. Select best move using MiniMax tree that has (b^0 + b^1 + b^2 + ... + b^m) nodes total.
+    If m is even, then we will have a maximum of ((3^4)^(m/2))*4^(m/2) leaves in the MiniMax tree.
+    This is equal to (3^2)^m2^m = 18^m leaves at level m.
+    If m is odd, then we will have a maximum of 4^(m/2 + 0.5)*(3^4)^(m/2 - 0.5) leaves in the MiniMax tree.
+    This is equal to (4^(m/2)*4^0.5)*((3^4)^(m/2)*(3^4)^(-0.5)) = 22^m1/9(3^2)^m = (2/9)*18^m leaves at
+    level m.
+
+    At each leaf, the heuristic is calculated which uses P operations as well as calculating game states for each
+    leaf. For each of the nodes at a lower depth, new game states will need to be calculated which will require
+    (1 + 4 + (3^4)*4 + 4*(3^4)*4 + ...) operations.
+    At most, 3^4 game states will need to be calculated in the case of ghosts.
+
+    In the even case, there is a max of (3^4)P*18^m + (4)(2/9)18^(m-1) + (3^4)18^(m-2) + ... operations.
+    The big O of this is O(P*18^m).
+    In the odd case, there is a max of (4)P*(2/9)*18^m + (3^4)18^(m-1) + ... operations which gives us a big O of
+    O(P*18^m).
+    In both cases, the big O is the same.
+
+    The time complexity for this step is O(P*18^m) which is exponential.
+
+2. Select best move using MiniMax tree that has (1 + 4 + (3^4)*4 + 4*(3^4)*4 + ...) nodes total.
 2a. If leaf, return a value.
-    This is a simple constant time operation that must be completed b^m times total.
+    This is a simple constant time operation that must be completed 18^m or (2/9)18^m times total.
 2b. If node, find max value among children.
-    Nodes on a given depth could have b^1,b^2,..., or b^m children total. Finding the max of the children requires
-    looking at all the children for b^1 + b^2 + ... + b^m operations total.
+    If m is even, nodes could have a max of (3^4)P*18^m, (4)(2/9)18^(m-1), (3^4)18^(m-2),... children.
+    If m is odd, nodes could have a max of (4)(2/9)P*18^m, (3^4)18^(m-1), (4)(2/9)18^(m-2),... children.
+    Finding the max of the children requires looking at all the children for
+    ((3^4)*18^m + (4)(2/9)18^(m-1) + (3^4)18^(m-2) + ...) operations total in the even case or
+    ((4)*(2/9)*18^m + (3^4)18^(m-1) + ...) operations total in the odd case.
 
-    Overall, this is a total of b^m + (b^1 + b^2 + ... + b^m) = O(b^m).
-    The average branching factor is 42.5 for O(42.5^m) for step.
+    Overall, this is a total of ((3^4)*18^m + (4)(2/9)18^(m-1) + (3^4)18^(m-2) + ...) = O(18^m) in the even case
+    and ((4)*(2/9)*18^m + (3^4)18^(m-1) + ...) = O(18^m) in the odd case.
 
-The total time complexity is O(P(42.5)^m) + O(42.5^m)
-= O(P(42.5)^m) where m is the depth of the MiniMax tree and P is the number of pills on a given maze. In practice,
-however, the branching factor will actually be much less as PacMan and the ghosts are normally stuck in corridors
-which will greatly limit the number of moves available.
+The total time complexity is O(P(18)^m) + O(18^m)
+= O(P(18)^m) where m is the depth of the MiniMax tree and P is the number of pills on a given maze. This is
+exponential runtime. In practice, however, the branching factor will actually be much less as PacMan and the ghosts
+are normally stuck in corridors which will greatly limit the number of moves available.
 
 =================
 
@@ -72,17 +88,20 @@ My code has the following steps:
    garbage collected.
    Overall, for a maximum of m nodes, the game state and possible move set of ghosts or pacman must be maintained
    for G*3^4*c*m nodes where G is the size of the game, 3^4*C is the space contained by possible ghost moves, and
-   m is the depth. Assuming constant game size, this gives us a O(m) space complexity for this step.
+   m is the depth. Assuming constant game size, this gives us a O(m) space complexity. However, we end up with
+   the tree in memory which has 18^m + (2/9)18^(m-1) + 18^(m-2) + ... total nodes giving us a complexity of O(18^m).
 
 2. Select best move from MiniMax tree
    This also operates in a DFS-like fashion. All leaves will return a value. All nodes will compare the heuristic
    values produced by their children. At most, m MoveNumber objects will be required in memory. This is O(m) space
    complexity.
 
-   Overall, O(m) + O(m)
-   = O(m)
+   Overall, O(18^m) + O(m)
+   = O(18^m)
 
-   The space complexity is O(m) where m is the depth of the MiniMax tree.
+   The space complexity is O(18^m) where m is the depth of the MiniMax tree. This is exponential. However, it would
+   be possible to change this program to generate the tree as the DFS searches meaning the entire tree would not
+   have to be in memory. This would change the space complexity to O(m) which is linear.
 ```
 
 ----------------------------------------------------------------
