@@ -61,7 +61,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *
  * 2. Select best move using MiniMax tree that has (1 + 4 + (3^4)*4 + 4*(3^4)*4 + ...) nodes total.
  * 2a. If leaf, return a value.
- *     This is a simple constant time operation that must be completed 18^m times total.
+ *     This is a simple constant time operation that must be completed 18^m or (2/9)18^m times total.
  * 2b. If node, find max value among children.
  *     If m is even, nodes could have a max of (3^4)P*18^m, (4)(2/9)18^(m-1), (3^4)18^(m-2),... children.
  *     If m is odd, nodes could have a max of (4)(2/9)P*18^m, (3^4)18^(m-1), (4)(2/9)18^(m-2),... children.
