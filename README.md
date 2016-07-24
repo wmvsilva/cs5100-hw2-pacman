@@ -80,6 +80,12 @@ My code has the following steps:
    The space complexity is O(m) where m is the depth of the MiniMax tree.
 ```
 
+----------------------------------------------------------------
+----------------------------------------------------------------
+----------------------------------------------------------------
+----------------------------------------------------------------
+----------------------------------------------------------------
+
 # CS 5100 HOMEWORK 2
 Assignment information can be found [here](https://docs.google.com/document/d/16Bf6-k3MuAswfZIrEwjE63hnetsyc32TGUOibEMROr8/edit?pref=2&pli=1).
 
