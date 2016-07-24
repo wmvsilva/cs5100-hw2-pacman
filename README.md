@@ -12,6 +12,10 @@ This can be compiled as a standard Maven project in any IDE.
 To run the MiniMax PacMan with random ghosts, run MainMiniMax.java.
 
 ## Complexity
+
+This complexity analysis is for the calculations required for a single
+call of MyPacManMiniMax's getMove method.
+
 ```
 Time Complexity:
 My code has the following steps.
