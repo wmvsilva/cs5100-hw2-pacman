@@ -22,7 +22,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Time Complexity:
  * My code has the following steps.
  *
- * 1. Create Minimax tree
+ * 1. Create MiniMax tree
  * 1a. For every other depth for PacMan, calculate game states for possible PacMan moves and create branches for each.
  *     Four game states are calculated. At a maximum, there could be 4 branches from this node.
  *
@@ -46,7 +46,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *     O(P(42.5)^m + (3^4)(42.5)^(m-1))
  *     = O(P(42.5)^m)
  *
- * 2. Select best move using minimax tree that has (b^0 + b^1 + b^2 + ... + b^m) nodes total.
+ * 2. Select best move using MiniMax tree that has (b^0 + b^1 + b^2 + ... + b^m) nodes total.
  * 2a. If leaf, return a value.
  *     This is a simple constant time operation that must be completed b^m times total.
  * 2b. If node, find max value among children.
@@ -57,15 +57,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *     The average branching factor is 42.5 for O(42.5^m) for step.
  *
  * The total time complexity is O(P(42.5)^m) + O(42.5^m)
- * = O(P(42.5)^m) where m is the depth of the minimax tree and P is the number of pills on a given maze. In practice,
- * however, the branching factor will actually be much less as Pacman and the ghosts are normally stuck in corridors
+ * = O(P(42.5)^m) where m is the depth of the MiniMax tree and P is the number of pills on a given maze. In practice,
+ * however, the branching factor will actually be much less as PacMan and the ghosts are normally stuck in corridors
  * which will greatly limit the number of moves available.
  *
  * =================
  *
  * Space Complexity:
  * My code has the following steps:
- * 1. Create Minimax tree
+ * 1. Create MiniMax tree
  *    For each branch, the current game with previous moves by ghosts and PacMan is passed down. However, only one
  *    branch is created at a time and it goes down 1 depth each time until it reaching the leaf and creates all of the
  *    other nodes at that level. It is very similar to DFS. At each node, the game states on the nodes of the current
@@ -73,10 +73,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *    The game state and possible moves are no longer required after the DFS has returned from the search and will be
  *    garbage collected.
  *    Overall, for a maximum of m nodes, the game state and possible move set of ghosts or pacman must be maintained
- *    for G*3^4*C*m nodes where G is the size of the game, 3^4*C is the space contained by possible ghost moves, and
+ *    for G*3^4*c*m nodes where G is the size of the game, 3^4*C is the space contained by possible ghost moves, and
  *    m is the depth. Assuming constant game size, this gives us a O(m) space complexity for this step.
  *
- * 2. Select best move from minimax tree
+ * 2. Select best move from MiniMax tree
  *    This also operates in a DFS-like fashion. All leaves will return a value. All nodes will compare the heuristic
  *    values produced by their children. At most, m MoveNumber objects will be required in memory. This is O(m) space
  *    complexity.
@@ -84,13 +84,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *    Overall, O(m) + O(m)
  *    = O(m)
  *
- *    The space complexity is O(m) where m is the depth of the minimax tree.
+ *    The space complexity is O(m) where m is the depth of the MiniMax tree.
  *
  */
 public class MyPacManMiniMax extends PacmanController
 {
     /**
-     * The depth of the minimax tree to create
+     * The depth of the MiniMax tree to create
      */
     private static final int MINIMAX_DEPTH = 4;
 
@@ -108,18 +108,18 @@ public class MyPacManMiniMax extends PacmanController
     /**
      * @param game copy of the current game
      * @param depth the depth of the tree to create
-     * @param isPacman are the next branches to create for PacMan? (Else, the ghosts)
+     * @param isPacMan are the next branches to create for PacMan? (Else, the ghosts)
      * @return a state-space search tree in which the leaves have been assigned values based on a heuristic. High
      * values represent PacMan winning while low values represent the ghosts winning.
      */
-    private Tree createMiniMaxTree(Game game, int depth, boolean isPacman)
+    private Tree createMiniMaxTree(Game game, int depth, boolean isPacMan)
     {
         // If there are no more branches to make or this is a terminal node
         if (depth == 0 || isEndGameState(game)) {
             return new Leaf(heuristicVal(game));
         }
 
-        if (isPacman) {
+        if (isPacMan) {
             // Create tree with branches for PacMan's moves at the top
 
             // Create branches depending on PacMan's possible moves
