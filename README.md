@@ -3,11 +3,14 @@ Assignment information can be found [here](https://docs.google.com/document/d/16
 
 ## Modules
 - entrants.pacman.silvaw.MyPacManMiniMax
+
   This implements the MiniMax search algorithm for Ms. PacMan.
 
 ## Compilation Instructions
 This can be compiled as a standard Maven project in any IDE.
+
 To run the DFS PacMan with random ghosts, run MainDFS.java.
+
 To run the A* PacMan with random ghosts, run MainAStar.java.
 
 ## Complexity
