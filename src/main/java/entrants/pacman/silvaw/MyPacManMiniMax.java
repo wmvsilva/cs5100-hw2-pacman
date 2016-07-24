@@ -61,6 +61,31 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * however, the branching factor will actually be much less as Pacman and the ghosts are normally stuck in corridors
  * which will greatly limit the number of moves available.
  *
+ * =================
+ *
+ * Space Complexity:
+ * My code has the following steps:
+ * 1. Create Minimax tree
+ *    For each branch, the current game with previous moves by ghosts and PacMan is passed down. However, only one
+ *    branch is created at a time and it goes down 1 depth each time until it reaching the leaf and creates all of the
+ *    other nodes at that level. It is very similar to DFS. At each node, the game states on the nodes of the current
+ *    search path must be maintained. Additionally, at each DFS node, possible ghost moves and pacman moves may be made.
+ *    The game state and possible moves are no longer required after the DFS has returned from the search and will be
+ *    garbage collected.
+ *    Overall, for a maximum of m nodes, the game state and possible move set of ghosts or pacman must be maintained
+ *    for G*3^4*C*m nodes where G is the size of the game, 3^4*C is the space contained by possible ghost moves, and
+ *    m is the depth. Assuming constant game size, this gives us a O(m) space complexity for this step.
+ *
+ * 2. Select best move from minimax tree
+ *    This also operates in a DFS-like fashion. All leaves will return a value. All nodes will compare the heuristic
+ *    values produced by their children. At most, m MoveNumber objects will be required in memory. This is O(m) space
+ *    complexity.
+ *
+ *    Overall, O(m) + O(m)
+ *    = O(m)
+ *
+ *    The space complexity is O(m) where m is the depth of the minimax tree.
+ *
  */
 public class MyPacManMiniMax extends PacmanController
 {
@@ -97,17 +122,15 @@ public class MyPacManMiniMax extends PacmanController
         if (isPacman) {
             // Create tree with branches for PacMan's moves at the top
 
-            // Calculate game states after PacMan's possible moves
-            Game leftGame = stateAfterPacMove(MOVE.LEFT, game);
-            Game rightGame = stateAfterPacMove(MOVE.RIGHT, game);
-            Game upGame = stateAfterPacMove(MOVE.UP, game);
-            Game downGame = stateAfterPacMove(MOVE.DOWN, game);
-
             // Create branches depending on PacMan's possible moves
             Map<MOVE, Tree> branches = new HashMap<>();
+            Game leftGame = stateAfterPacMove(MOVE.LEFT, game);
             branches.put(MOVE.LEFT, createMiniMaxTree(leftGame, depth - 1, false));
+            Game rightGame = stateAfterPacMove(MOVE.RIGHT, game);
             branches.put(MOVE.RIGHT, createMiniMaxTree(rightGame, depth - 1, false));
+            Game upGame = stateAfterPacMove(MOVE.UP, game);
             branches.put(MOVE.UP, createMiniMaxTree(upGame, depth - 1, false));
+            Game downGame = stateAfterPacMove(MOVE.DOWN, game);
             branches.put(MOVE.DOWN, createMiniMaxTree(downGame, depth - 1, false));
 
             return new PacNode(branches);
