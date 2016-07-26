@@ -62,7 +62,6 @@ motorway(76,66).
 
 motorway(69,66).
 
-route(A,B):- footpath(A,B);footpath(B,A).
-route(A,B):- motorway(A,B);motorway(B,A).
-
-route(A,C):- route(A,B), route(B,C).
+footpath(A,B) :- motorway(A,B).
+fconnect(A,B):- footpath(A,B); footpath(B,A).
+route(A,B):- fconnect(A,B); fconnect(A,Z),fconnect(Z,B).
