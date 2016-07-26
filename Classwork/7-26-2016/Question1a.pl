@@ -62,6 +62,21 @@ motorway(76,66).
 
 motorway(69,66).
 
-footpath(A,B) :- motorway(A,B).
-fconnect(A,B):- footpath(A,B); footpath(B,A).
-route(A,B):- fconnect(A,B); fconnect(A,Z),fconnect(Z,B).
+connection(A,B):- motorway(A,B); motorway(B,A).
+connection(A,B):- footpath(A,B); footpath(B,A).
+
+route(A,B):- path_exists(A,B).
+
+path_exists(X,Y) :- path(X,Y,_), !.
+
+path(A,B,Path) :-
+       travel(A,B,[A],Q), 
+       reverse(Q,Path).
+
+travel(A,B,P,[B|P]) :- 
+       connection(A,B).
+travel(A,B,Visited,Path) :-
+       connection(A,C),           
+       C \== B,
+       \+member(C,Visited),
+       travel(C,B,[C|Visited],Path).

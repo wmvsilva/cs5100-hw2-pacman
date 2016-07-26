@@ -1,0 +1,14 @@
+1 ?- route(52,53).
+true.
+
+2 ?- route(66,69).
+true.
+
+3 ?- route(63,52).
+true.
+
+4 ?- route(52,63).
+true.
+
+5 ?- route(52,1000).
+false.
