@@ -65,7 +65,4 @@ motorway(69,66).
 route(A,B):- footpath(A,B);footpath(B,A).
 route(A,B):- motorway(A,B);motorway(B,A).
 
-route(A,B):- footpath(A,B).
-route(A,B):- motorway(A,B).
-route(A,C):- footpath(A,B), route(B,C).
-route(A,C):- motorway(A,B), route(B,C).
+route(A,C):- route(A,B), route(B,C).
