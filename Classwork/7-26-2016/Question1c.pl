@@ -24,7 +24,7 @@ only_footpath_travel(A,B,Visited,Path) :-
        only_footpath_travel(C,B,[C|Visited],Path).
 
 
-% 3. A path from hall A to hall B is short if it is only of length 1
+% 3. A path from hall A to hall B is short if it is only of length 1 on the graph
 Rule:
 short(A,B):- connection(A,B).
 
@@ -33,9 +33,10 @@ short(A,B):- connection(A,B).
 Fact:
 cool_kids_path(66,68).
 
+
 % 5. A path from hall A to hall B is undesirable if it has at least one footpath connection
 Rule (uses code from problem #2):
-undesirable(A,B):- ~desirable(A,B).
+undesirable(A,B):- not(desirable(A,B)).
 
 
 % 6. Is there a footpath that connects 76 to 69?
