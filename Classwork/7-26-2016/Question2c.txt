@@ -1,0 +1,39 @@
+1 ?- husband(X,sarah).
+X = andrew.
+
+2 ?- greatGrandChild(X,elizabeth).
+X = george ;
+X = savannah ;
+X = isla ;
+X = mia.
+
+3 ?- parent(GRANDPARENT,U),parent(U,zara).
+GRANDPARENT = philip,
+U = anne ;
+GRANDPARENT = elizabeth,
+U = anne ;
+false.
+
+4 ?- brother_in_law(X,diana);sister_in_law(X,diana).
+X = andrew ;
+X = edward ;
+X = anne ;
+false.
+
+5 ?- uncle(X,beatrice).
+X = charles ;
+X = edward ;
+X = mark ;
+X = timothy ;
+false.
+
+6 ?- daughter(X, Y),(brother(Y,charles);sister(Y,charles);brother_in_law(Y,charles);sister_in_law(Y,charles)).
+X = zara,
+Y = anne ;
+X = beatrice,
+Y = andrew ;
+X = eugenie,
+Y = andrew ;
+X = louise,
+Y = edward ;
+false.
