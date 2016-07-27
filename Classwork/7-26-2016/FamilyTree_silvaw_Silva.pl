@@ -61,9 +61,11 @@ greatGrandParent(P,C):- grandChild(C,U),parent(P,U).
 greatGrandChild(C,P):- greatGrandParent(P,C).
 brother(B,S):- son(B,P),mother(P,S),(B \= S).
 sister(S,C):- daughter(S,P),mother(P,C),(S \= C).
-% Aunt is the sister of one's father or mother or the wife of one's uncle.
+% Aunt is the sister of one's father or mother, or the wife of one's uncle.
 aunt(A,P):- (parent(Z,P),sister(A,Z)); wife(A,U),parent(Y,P),brother(U,Y).
-% the brother of one's father or mother or the husband of one's aunt.
+% Uncle is the brother of one's father or mother, or the husband of one's aunt.
 uncle(A,P):- (parent(Z,P),brother(A,Z)); husband(A,U),parent(Y,P),sister(U,Y).
-brother_in_law(X,Y):- spouse(Y,S),brother(X,S).
-sister_in_law(X,Y):- spouse(Y,S),sister(X,S).
+% brother_in_law is the brother of your husband or wife, or the husband of your sister
+brother_in_law(X,Y):- (spouse(Y,S),brother(X,S));(husband(X,Z),sister(Z,Y)).
+% sister_in_law is the sister of your husband or wife, or the wife of your brother
+sister_in_law(X,Y):- (spouse(Y,S),sister(X,S));(wife(X,Z),brother(Z,Y)).

@@ -27,13 +27,13 @@ X = mark ;
 X = timothy ;
 false.
 
-6 ?- daughter(X, Y),(brother(Y,charles);sister(Y,charles);brother_in_law(Y,charles);sister_in_law(Y,charles)).
-X = zara,
+6 ?- daughter(NIECE, Y),(brother(Y,charles);sister(Y,charles);(spouse(charles,S),brother(Y,S));(spouse(charles,S),sister(Y,S))).
+NIECE = zara,
 Y = anne ;
-X = beatrice,
+NIECE = beatrice,
 Y = andrew ;
-X = eugenie,
+NIECE = eugenie,
 Y = andrew ;
-X = louise,
+NIECE = louise,
 Y = edward ;
 false.
