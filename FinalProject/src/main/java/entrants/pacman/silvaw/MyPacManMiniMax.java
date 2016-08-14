@@ -52,18 +52,13 @@ public class MyPacManMiniMax extends PacmanController
             // Create branches depending on PacMan's possible moves
             Map<MOVE, MoveNumber> branches = new HashMap<>();
 
+            Set<MOVE> possiblePacManMoves =
+                    new HashSet<>(Arrays.asList(game.getPossibleMoves(game.getPacmanCurrentNodeIndex())));
 
-            Game leftGame = stateAfterPacMove(MOVE.LEFT, game);
-            branches.put(MOVE.LEFT, createMiniMaxTreeAndGetBestMove(leftGame, depth - 1, false));
-
-            Game rightGame = stateAfterPacMove(MOVE.RIGHT, game);
-            branches.put(MOVE.RIGHT, createMiniMaxTreeAndGetBestMove(rightGame, depth - 1, false));
-
-            Game upGame = stateAfterPacMove(MOVE.UP, game);
-            branches.put(MOVE.UP, createMiniMaxTreeAndGetBestMove(upGame, depth - 1, false));
-
-            Game downGame = stateAfterPacMove(MOVE.DOWN, game);
-            branches.put(MOVE.DOWN, createMiniMaxTreeAndGetBestMove(downGame, depth - 1, false));
+            for (MOVE move : possiblePacManMoves) {
+                Game nextGameState = stateAfterPacMove(move, game);
+                branches.put(move, createMiniMaxTreeAndGetBestMove(nextGameState, depth - 1, false));
+            }
 
             MoveNumber maximizing = null;
             for (Map.Entry<MOVE, MoveNumber> entry : branches.entrySet()) {
