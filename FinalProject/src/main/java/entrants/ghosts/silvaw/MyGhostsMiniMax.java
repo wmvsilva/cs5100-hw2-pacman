@@ -5,6 +5,7 @@ import com.google.common.base.Optional;
 import pacman.controllers.Controller;
 import pacman.game.Constants;
 import pacman.game.Game;
+import project.Heuristic;
 import project.MiniMax;
 
 import java.util.EnumMap;
@@ -19,15 +20,20 @@ public class MyGhostsMiniMax extends Controller<EnumMap<Constants.GHOST, Constan
 {
     private MiniMax miniMax;
 
-    MyGhostsMiniMax(MiniMax miniMax)
+    public MyGhostsMiniMax(Heuristic miniMax)
     {
-        this.miniMax = checkNotNull(miniMax);
+        this.miniMax = new MiniMax(miniMax);
     }
 
     @Override
     public EnumMap<Constants.GHOST, Constants.MOVE> getMove(Game game, long timeDue)
     {
-        Map<Constants.GHOST, Constants.MOVE> ghostMoves = miniMax.createMiniMaxTreeAndGetBestMove(game, 4, false, Optional.<Integer>absent(), Optional.<Integer>absent()).ghostMoves;
+        MiniMax.MoveNumber moveNumber = miniMax.createMiniMaxTreeAndGetBestMove(game, 4, false, Optional.<Integer>absent(), Optional.<Integer>absent());
+        Map<Constants.GHOST, Constants.MOVE> ghostMoves = moveNumber.ghostMoves;
+        if (moveNumber.hValue == Integer.MIN_VALUE) {
+            System.out.println("Terminal node");
+            return null;
+        }
 
         EnumMap<Constants.GHOST, Constants.MOVE> enumMap = new EnumMap<>(Constants.GHOST.class);
         for (Map.Entry<Constants.GHOST, Constants.MOVE> ghostMove : ghostMoves.entrySet()) {

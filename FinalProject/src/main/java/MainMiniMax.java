@@ -1,3 +1,4 @@
+import entrants.ghosts.silvaw.MyGhostsMiniMax;
 import entrants.pacman.silvaw.MyPacManMiniMax;
 import examples.commGhosts.POCommGhosts;
 import pacman.Executor;
@@ -13,6 +14,6 @@ public class MainMiniMax
     public static void main(String[] args) {
 
         Executor executor = new Executor(false, true);
-        executor.runGameTimed(new MyPacManMiniMax(new PacManHeuristic()), new POCommGhosts(50), true);
+        executor.runGame(new MyPacManMiniMax(new PacManHeuristic()), new MyGhostsMiniMax(new PacManHeuristic()), true, 0);
     }
 }

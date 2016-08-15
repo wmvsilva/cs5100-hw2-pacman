@@ -203,7 +203,7 @@ public class MiniMax
         /**
          * Heuristic value
          */
-        int hValue;
+        public int hValue;
 
         MoveNumber(@Nullable Constants.MOVE move, int hValue)
         {
