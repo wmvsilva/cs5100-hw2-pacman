@@ -1,5 +1,6 @@
 package ga;
 
+import com.google.common.base.Objects;
 import project.WeightNames;
 
 import java.util.ArrayList;
@@ -10,8 +11,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 abstract public class Individual
 {
-    public static final int MIN_WEIGHT = -1000;
-    public static final int MAX_WEIGHT = 1000;
+    public static final int MIN_WEIGHT = -10000;
+    public static final int MAX_WEIGHT = 10000;
     private List<Pair> genes = generateEmptyGenes();
     // Cache
     private int fitness = 0;
@@ -80,6 +81,12 @@ abstract public class Individual
         {
             this.name = name;
             this.value = value;
+        }
+
+        @Override
+        public String toString()
+        {
+            return name + "=" + value;
         }
     }
 }
