@@ -22,7 +22,7 @@ public class WeightNames
         names.add("pacManDistanceToInky");
         names.add("pacManDistanceToPinky");
         names.add("pacManDistanceToSue");
-        names.add("pacManDistanceToNearestGhost");
+        names.add("pacManDistanceToNearestGhostIfNotEdible");
         names.add("pacManNearestGhostEdible");
         names.add("pacManDistanceToNearestGhostUnder20");
         names.add("pacManNearestGhostEdibleAndUnder40");
@@ -37,6 +37,14 @@ public class WeightNames
         names.add("gameOver");
         names.add("wasPillEaten");
         names.add("wasPowerPillEaten");
+
+        names.add("pacManNumPossibleMoves");
+        names.add("blinkyNumPossibleMoves");
+        names.add("inkyNumPossibleMoves");
+        names.add("pinkyNumPossibleMoves");
+        names.add("sueNumPossibleMoves");
+        names.add("distanceToNextNearestPillMOreThan10IfPillJustEaten");
+        names.add("distanceToNearestPillAboveFive");
 
         return names;
     }

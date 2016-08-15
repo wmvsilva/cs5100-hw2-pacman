@@ -1,6 +1,7 @@
 package ga;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Optional;
 import project.WeightNames;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ abstract public class Individual
     public static final int MAX_WEIGHT = 10000;
     private List<Pair> genes = generateEmptyGenes();
     // Cache
-    private int fitness = 0;
+    private Optional<Integer> fitness = Optional.absent();
 
     static List<Pair> generateEmptyGenes()
     {
@@ -40,7 +41,7 @@ abstract public class Individual
 
     public void setGene(int index, int value) {
         genes.set(index, new Pair(genes.get(index).name, value));
-        fitness = 0;
+        fitness = Optional.absent();
     }
 
     /* Public methods */
@@ -51,10 +52,10 @@ abstract public class Individual
     abstract public int getPersonalFitness(Population population);
 
     public int getFitness(Population population) {
-        if (fitness == 0) {
-            fitness = getPersonalFitness(population);
+        if (!fitness.isPresent()) {
+            fitness = Optional.of(getPersonalFitness(population));
         }
-        return fitness;
+        return fitness.get();
     }
 
     public Map<String, Integer> getGeneMap()

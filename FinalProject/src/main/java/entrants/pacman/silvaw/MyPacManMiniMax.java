@@ -22,7 +22,7 @@ public class MyPacManMiniMax extends PacmanController
     /**
      * The depth of the MiniMax tree to create
      */
-    private static final int MINIMAX_DEPTH = 4;
+    private static final int MINIMAX_DEPTH = 6;
 
     private MiniMax miniMax;
 

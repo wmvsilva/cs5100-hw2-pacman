@@ -28,7 +28,7 @@ public class MyGhostsMiniMax extends Controller<EnumMap<Constants.GHOST, Constan
     @Override
     public EnumMap<Constants.GHOST, Constants.MOVE> getMove(Game game, long timeDue)
     {
-        MiniMax.MoveNumber moveNumber = miniMax.createMiniMaxTreeAndGetBestMove(game, 4, false, Optional.<Integer>absent(), Optional.<Integer>absent());
+        MiniMax.MoveNumber moveNumber = miniMax.createMiniMaxTreeAndGetBestMove(game, 6, false, Optional.<Integer>absent(), Optional.<Integer>absent());
         Map<Constants.GHOST, Constants.MOVE> ghostMoves = moveNumber.ghostMoves;
         if (ghostMoves == null) {
             // TODO System.out.println("Terminal node");

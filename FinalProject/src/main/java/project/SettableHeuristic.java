@@ -44,6 +44,10 @@ public class SettableHeuristic implements Heuristic
                 nearestGhost = ghostDistance.getKey();
             }
         }
+        int distanceToNearestGhostIfNotEdible = distanceToNearestGhost;
+        if (game.isGhostEdible(nearestGhost)) {
+            distanceToNearestGhostIfNotEdible = 0;
+        }
         // Determine all active pill indices to be used to find closest pill
         List<Integer> activePillIndices = new ArrayList<>();
         activePillIndices.addAll(Ints.asList(game.getActivePillsIndices()));
@@ -59,6 +63,16 @@ public class SettableHeuristic implements Heuristic
             distanceToNearestPill = Collections.min(distancesToPills);
         }
 
+        Set<Constants.MOVE> possibleBlinkyMoves = MiniMax.getPossibleGhostMoves(game, Constants.GHOST.BLINKY);
+        Set<Constants.MOVE> possibleInkyMoves = MiniMax.getPossibleGhostMoves(game, Constants.GHOST.INKY);
+        Set<Constants.MOVE> possiblePinkyMoves = MiniMax.getPossibleGhostMoves(game, Constants.GHOST.PINKY);
+        Set<Constants.MOVE> possibleSueMoves = MiniMax.getPossibleGhostMoves(game, Constants.GHOST.SUE);
+
+        int distanceToNextNearestPillMOreThan10IfPillJustEaten = 0;
+        if (game.wasPillEaten() || distanceToNearestPill > 10) {
+            distanceToNextNearestPillMOreThan10IfPillJustEaten = distanceToNearestPill;
+        }
+
         return fieldToWeights.get("pacManEaten") * boolToNum(game.wasPacManEaten()) +
                 fieldToWeights.get("numActivePills") * game.getNumberOfActivePills() +
                 fieldToWeights.get("numActivePowerPills") * game.getNumberOfActivePowerPills() +
@@ -67,7 +81,7 @@ public class SettableHeuristic implements Heuristic
                 fieldToWeights.get("pacManDistanceToInky") * shortestPathDistanceToGhost(game, Constants.GHOST.INKY) +
                 fieldToWeights.get("pacManDistanceToPinky") * shortestPathDistanceToGhost(game, Constants.GHOST.PINKY) +
                 fieldToWeights.get("pacManDistanceToSue") * shortestPathDistanceToGhost(game, Constants.GHOST.SUE) +
-                fieldToWeights.get("pacManDistanceToNearestGhost") * distanceToNearestGhost +
+                fieldToWeights.get("pacManDistanceToNearestGhostIfNotEdible") * distanceToNearestGhostIfNotEdible +
                 fieldToWeights.get("pacManNearestGhostEdible") * boolToNum(game.isGhostEdible(nearestGhost)) +
                 fieldToWeights.get("pacManDistanceToNearestGhostUnder20") * boolToNum(distanceToNearestGhost < 20) +
                 fieldToWeights.get("pacManNearestGhostEdibleAndUnder40") * boolToNum(game.isGhostEdible(nearestGhost) && distanceToNearestGhost <= 40) +
@@ -81,7 +95,15 @@ public class SettableHeuristic implements Heuristic
                 fieldToWeights.get("livesRemaining") * game.getPacmanNumberOfLivesRemaining() +
                 fieldToWeights.get("gameOver") * boolToNum(game.gameOver()) +
                 fieldToWeights.get("wasPillEaten") * boolToNum(game.wasPillEaten()) +
-                fieldToWeights.get("wasPowerPillEaten") * boolToNum(game.wasPowerPillEaten());
+                fieldToWeights.get("wasPowerPillEaten") * boolToNum(game.wasPowerPillEaten()) +
+
+                fieldToWeights.get("pacManNumPossibleMoves") * game.getPossibleMoves(game.getPacmanCurrentNodeIndex()).length +
+                fieldToWeights.get("blinkyNumPossibleMoves") * possibleBlinkyMoves.size() +
+                fieldToWeights.get("inkyNumPossibleMoves") * possibleInkyMoves.size() +
+                fieldToWeights.get("pinkyNumPossibleMoves") * possiblePinkyMoves.size() +
+                fieldToWeights.get("sueNumPossibleMoves") * possibleSueMoves.size() +
+                fieldToWeights.get("distanceToNextNearestPillMOreThan10IfPillJustEaten") * distanceToNextNearestPillMOreThan10IfPillJustEaten +
+                fieldToWeights.get("distanceToNearestPillAboveFive") * boolToNum(distanceToNearestPill >= 5);
     }
 
     private static int boolToNum(boolean bool)

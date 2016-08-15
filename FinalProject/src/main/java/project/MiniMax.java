@@ -178,7 +178,7 @@ public class MiniMax
      * @param ghost one of the four ghosts
      * @return set of all possible moves that the given ghost can perform in the given game state
      */
-    private static Set<Constants.MOVE> getPossibleGhostMoves(Game game, Constants.GHOST ghost)
+    public static Set<Constants.MOVE> getPossibleGhostMoves(Game game, Constants.GHOST ghost)
     {
         Set<Constants.MOVE> result = Sets.newHashSet(game.getPossibleMoves(game.getGhostCurrentNodeIndex(ghost),
                 game.getGhostLastMoveMade(ghost)));
