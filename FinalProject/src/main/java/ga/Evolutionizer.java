@@ -16,18 +16,26 @@ public class Evolutionizer
         // FitnessCalc.setSolution("1111000000000000000000000000000000000000000000000000000000001111");
 
         // Create an initial population
-        Population myPop = new Population(10, true);
+        Population myPacManPop = new Population(10, true, true);
+        Population myGhostPop = new Population(10, true, false);
 
         // Evolve our population until we reach an optimum solution
         int generationCount = 0;
         while (generationCount < 45) {// (myPop.getFittest().getFitness() < FitnessCalc.getMaxFitness()) {
             generationCount++;
-            System.out.println("Generation: " + generationCount + " Fittest: " + myPop.getFittest().getFitness());
-            myPop = Algorithm.evolvePopulation(myPop);
+            // Evolve PacMen
+            System.out.println("PacMan- Generation: " + generationCount + " Fittest: " + myPacManPop.getFittest(myGhostPop).getFitness(myGhostPop));
+            myPacManPop = Algorithm.evolvePopulation(myPacManPop, myGhostPop);
+            // Evolve Ghosts
+            System.out.println("Ghosts- Generation: " + generationCount + " Fittest: " + myGhostPop.getFittest(myPacManPop).getFitness(myPacManPop));
+            myGhostPop = Algorithm.evolvePopulation(myGhostPop, myPacManPop);
         }
         System.out.println("Generation: " + generationCount);
         System.out.println("Genes:");
-        System.out.println(myPop.getFittest());
+        System.out.println(myPacManPop.getFittest(myGhostPop));
+        System.out.println("Generation: " + generationCount);
+        System.out.println("Genes:");
+        System.out.println(myGhostPop.getFittest(myPacManPop));
 
         //Executor executor = new Executor(false, true);
         //executor.runGameTimed(new MyPacManMiniMax(new SettableHeuristic(myPop.getFittest().getGeneMap())),

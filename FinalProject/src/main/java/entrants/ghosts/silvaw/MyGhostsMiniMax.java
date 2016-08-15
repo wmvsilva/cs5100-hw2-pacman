@@ -30,8 +30,8 @@ public class MyGhostsMiniMax extends Controller<EnumMap<Constants.GHOST, Constan
     {
         MiniMax.MoveNumber moveNumber = miniMax.createMiniMaxTreeAndGetBestMove(game, 4, false, Optional.<Integer>absent(), Optional.<Integer>absent());
         Map<Constants.GHOST, Constants.MOVE> ghostMoves = moveNumber.ghostMoves;
-        if (moveNumber.hValue == Integer.MIN_VALUE) {
-            System.out.println("Terminal node");
+        if (ghostMoves == null) {
+            // TODO System.out.println("Terminal node");
             return null;
         }
 

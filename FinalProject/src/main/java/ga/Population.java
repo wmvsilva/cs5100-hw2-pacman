@@ -7,17 +7,30 @@ public class Population
 {
     private Individual[] individuals;
 
-    public Population(int populationSize, boolean initialise) {
+    boolean isPacManPop;
+
+    public Population(int populationSize, boolean initialise, boolean isPacManPopulation) {
         individuals = new Individual[populationSize];
+        this.isPacManPop = isPacManPopulation;
         // Initialise population
         if (initialise) {
             // Loop and create individuals
             for (int i = 0; i < size(); i++) {
-                Individual newIndividual = new Individual();
+                Individual newIndividual;
+                if (isPacManPopulation) {
+                    newIndividual = new PacManIndividual();
+                } else {
+                    newIndividual = new GhostIndividual();
+                }
                 newIndividual.generateIndividual();
                 individuals[i] = newIndividual;
             }
         }
+    }
+
+    public boolean isPacManPop()
+    {
+        return isPacManPop;
     }
 
     /* Getters */
@@ -25,11 +38,11 @@ public class Population
         return individuals[index];
     }
 
-    public Individual getFittest() {
+    public Individual getFittest(Population opposingPopulation) {
         Individual fittest = individuals[0];
         // Loop through individuals to find fittest
         for (int i = 0; i < size(); i++) {
-            if (fittest.getFitness() <= getIndividual(i).getFitness()) {
+            if (fittest.getFitness(opposingPopulation) <= getIndividual(i).getFitness(opposingPopulation)) {
                 fittest = getIndividual(i);
             }
         }

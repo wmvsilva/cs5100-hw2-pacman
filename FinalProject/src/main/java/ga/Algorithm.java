@@ -14,12 +14,12 @@ public class Algorithm {
     /* Public methods */
 
     // Evolve a population
-    public static Population evolvePopulation(Population pop) {
-        Population newPopulation = new Population(pop.size(), false);
+    public static Population evolvePopulation(Population pop, Population opposingPopulation) {
+        Population newPopulation = new Population(pop.size(), false, pop.isPacManPop());
 
         // Keep our best individual
         if (elitism) {
-            newPopulation.saveIndividual(0, pop.getFittest());
+            newPopulation.saveIndividual(0, pop.getFittest(opposingPopulation));
         }
 
         // Crossover population
@@ -32,9 +32,9 @@ public class Algorithm {
         // Loop over the population size and create new individuals with
         // crossover
         for (int i = elitismOffset; i < pop.size(); i++) {
-            Individual indiv1 = tournamentSelection(pop);
-            Individual indiv2 = tournamentSelection(pop);
-            Individual newIndiv = crossover(indiv1, indiv2);
+            Individual indiv1 = tournamentSelection(pop, opposingPopulation);
+            Individual indiv2 = tournamentSelection(pop, opposingPopulation);
+            Individual newIndiv = crossover(indiv1, indiv2, pop.isPacManPop());
             newPopulation.saveIndividual(i, newIndiv);
         }
 
@@ -47,8 +47,13 @@ public class Algorithm {
     }
 
     // Crossover individuals
-    private static Individual crossover(Individual indiv1, Individual indiv2) {
-        Individual newSol = new Individual();
+    private static Individual crossover(Individual indiv1, Individual indiv2, boolean isPacManPopulation) {
+        Individual newSol;
+        if (isPacManPopulation) {
+            newSol = new PacManIndividual();
+        } else {
+            newSol = new GhostIndividual();
+        }
         // Loop through genes
         for (int i = 0; i < indiv1.size(); i++) {
             // Crossover
@@ -74,16 +79,16 @@ public class Algorithm {
     }
 
     // Select individuals for crossover
-    private static Individual tournamentSelection(Population pop) {
+    private static Individual tournamentSelection(Population pop, Population opposingPopulation) {
         // Create a tournament population
-        Population tournament = new Population(tournamentSize, false);
+        Population tournament = new Population(tournamentSize, false, pop.isPacManPop());
         // For each place in the tournament get a random individual
         for (int i = 0; i < tournamentSize; i++) {
             int randomId = (int) (Math.random() * pop.size());
             tournament.saveIndividual(i, pop.getIndividual(randomId));
         }
         // Get the fittest
-        Individual fittest = tournament.getFittest();
+        Individual fittest = tournament.getFittest(opposingPopulation);
         return fittest;
     }
 }

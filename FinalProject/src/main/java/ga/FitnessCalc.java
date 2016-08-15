@@ -16,9 +16,23 @@ public class FitnessCalc
 {
 
     // Calculate inidividuals fittness by comparing it to our candidate solution
-    static int getFitness(Individual individual) {
+    static int getPacManFitness(Individual individual, Map<String, Integer> ghostGenes) {
         Map<String, Integer> geneMap = individual.getGeneMap();
         Executor executor = new Executor(false, true);
-        return executor.runGame(new MyPacManMiniMax(new SettableHeuristic(geneMap)), new POCommGhosts(50), false, 0);
+        return executor.runGame(
+                new MyPacManMiniMax(new SettableHeuristic(geneMap)),
+                new MyGhostsMiniMax(new SettableHeuristic(ghostGenes)), false, 0);
+    }
+
+    // Calculate inidividuals fittness by comparing it to our candidate solution
+    static int getGhostFitness(Individual individual, Map<String, Integer> pacManGenes) {
+        Map<String, Integer> geneMap = individual.getGeneMap();
+        Executor executor = new Executor(false, true);
+
+        int ghostFitness = 0 - executor.runGame(
+                new MyPacManMiniMax(new SettableHeuristic(pacManGenes)),
+                new MyGhostsMiniMax(new SettableHeuristic(geneMap)), false, 0);
+        System.out.println("Ghost fitness: " + ghostFitness);
+        return ghostFitness;
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Individual
+abstract public class Individual
 {
     private List<Pair> genes = generateEmptyGenes();
     // Cache
@@ -45,9 +45,11 @@ public class Individual
         return genes.size();
     }
 
-    public int getFitness() {
+    abstract public int getPersonalFitness(Population population);
+
+    public int getFitness(Population population) {
         if (fitness == 0) {
-            fitness = FitnessCalc.getFitness(this);
+            fitness = getPersonalFitness(population);
         }
         return fitness;
     }
