@@ -28,6 +28,16 @@ public class WeightNames
         names.add("pacManNearestGhostEdibleAndUnder40");
         names.add("pacManDistanceToNearestPill");
 
+        names.add("numTotalActivePills");
+        names.add("numLevel");
+        names.add("levelTime");
+        names.add("totalGameTime");
+        names.add("numGhostsEaten");
+        names.add("livesRemaining");
+        names.add("gameOver");
+        names.add("wasPillEaten");
+        names.add("wasPowerPillEaten");
+
         return names;
     }
 }

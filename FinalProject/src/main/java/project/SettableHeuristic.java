@@ -71,7 +71,17 @@ public class SettableHeuristic implements Heuristic
                 fieldToWeights.get("pacManNearestGhostEdible") * boolToNum(game.isGhostEdible(nearestGhost)) +
                 fieldToWeights.get("pacManDistanceToNearestGhostUnder20") * boolToNum(distanceToNearestGhost < 20) +
                 fieldToWeights.get("pacManNearestGhostEdibleAndUnder40") * boolToNum(game.isGhostEdible(nearestGhost) && distanceToNearestGhost <= 40) +
-                fieldToWeights.get("pacManDistanceToNearestPill") * distanceToNearestPill;
+                fieldToWeights.get("pacManDistanceToNearestPill") * distanceToNearestPill +
+
+                fieldToWeights.get("numTotalActivePills") * game.getNumberOfActivePills() + game.getNumberOfActivePowerPills() +
+                fieldToWeights.get("numLevel") * game.getCurrentLevel() +
+                fieldToWeights.get("levelTime") * game.getCurrentLevelTime() +
+                fieldToWeights.get("totalGameTime") * game.getTotalTime() +
+                fieldToWeights.get("numGhostsEaten") * game.getNumGhostsEaten() +
+                fieldToWeights.get("livesRemaining") * game.getPacmanNumberOfLivesRemaining() +
+                fieldToWeights.get("gameOver") * boolToNum(game.gameOver()) +
+                fieldToWeights.get("wasPillEaten") * boolToNum(game.wasPillEaten()) +
+                fieldToWeights.get("wasPowerPillEaten") * boolToNum(game.wasPowerPillEaten());
     }
 
     private static int boolToNum(boolean bool)
