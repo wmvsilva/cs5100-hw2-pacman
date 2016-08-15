@@ -14,7 +14,7 @@ public class Algorithm {
     private static final double uniformRate = 0.5;
     private static final double mutationRate = 0.015;
     private static final int tournamentSize = 5;
-    private static final boolean elitism = false;
+    private static final boolean elitism = true;
 
     /* Public methods */
 
@@ -24,6 +24,8 @@ public class Algorithm {
 
         // Keep our best individual
         if (elitism) {
+            Individual elite = pop.getFittest(opposingPopulation);
+            elite.resetFitness();
             newPopulation.saveIndividual(0, pop.getFittest(opposingPopulation));
         }
 

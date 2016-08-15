@@ -46,6 +46,9 @@ public class WeightNames
         names.add("distanceToNextNearestPillMOreThan10IfPillJustEaten");
         names.add("distanceToNearestPillAboveFive");
 
+        names.add("pacManLastMoveLeft");
+        names.add("pacManLastMoveDown");
+
         return names;
     }
 }

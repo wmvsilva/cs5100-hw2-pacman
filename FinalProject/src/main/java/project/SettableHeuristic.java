@@ -103,7 +103,10 @@ public class SettableHeuristic implements Heuristic
                 fieldToWeights.get("pinkyNumPossibleMoves") * possiblePinkyMoves.size() +
                 fieldToWeights.get("sueNumPossibleMoves") * possibleSueMoves.size() +
                 fieldToWeights.get("distanceToNextNearestPillMOreThan10IfPillJustEaten") * distanceToNextNearestPillMOreThan10IfPillJustEaten +
-                fieldToWeights.get("distanceToNearestPillAboveFive") * boolToNum(distanceToNearestPill >= 5);
+                fieldToWeights.get("distanceToNearestPillAboveFive") * boolToNum(distanceToNearestPill >= 5) +
+
+                fieldToWeights.get("pacManLastMoveLeft") * boolToNum(game.getPacmanLastMoveMade() == Constants.MOVE.LEFT) +
+                fieldToWeights.get("pacManLastMoveDown") * boolToNum(game.getPacmanLastMoveMade() == Constants.MOVE.DOWN);
     }
 
     private static int boolToNum(boolean bool)

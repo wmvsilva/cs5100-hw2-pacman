@@ -68,6 +68,11 @@ abstract public class Individual
         return geneMap;
     }
 
+    public void resetFitness()
+    {
+        fitness = Optional.absent();
+    }
+
     @Override
     public String toString() {
         return genes.toString();
