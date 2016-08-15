@@ -10,12 +10,22 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Individual
 {
-    private List<Pair> genes = new ArrayList<>();
+    private List<Pair> genes = generateEmptyGenes();
     // Cache
     private int fitness = 0;
 
+    static List<Pair> generateEmptyGenes()
+    {
+        List<Pair> emptyGenes = new ArrayList<>();
+        for (String geneName : WeightNames.getNames()) {
+            emptyGenes.add(new Pair(geneName, 0));
+        }
+        return emptyGenes;
+    }
+
     // Create a random individual
     public void generateIndividual() {
+        genes.clear();
         for (String geneName : WeightNames.getNames()) {
             genes.add(new Pair(geneName, ThreadLocalRandom.current().nextInt(-500, 500 + 1)));
         }
@@ -26,7 +36,7 @@ public class Individual
     }
 
     public void setGene(int index, int value) {
-        genes.get(index).value = value;
+        genes.set(index, new Pair(genes.get(index).name, value));
         fitness = 0;
     }
 
