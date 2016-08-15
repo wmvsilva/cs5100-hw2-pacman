@@ -27,7 +27,7 @@ abstract public class Individual
     public void generateIndividual() {
         genes.clear();
         for (String geneName : WeightNames.getNames()) {
-            genes.add(new Pair(geneName, ThreadLocalRandom.current().nextInt(-500, 500 + 1)));
+            genes.add(new Pair(geneName, ThreadLocalRandom.current().nextInt(-1000, 1000 + 1)));
         }
     }
 

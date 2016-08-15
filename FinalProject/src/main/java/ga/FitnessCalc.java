@@ -29,10 +29,8 @@ public class FitnessCalc
         Map<String, Integer> geneMap = individual.getGeneMap();
         Executor executor = new Executor(false, true);
 
-        int ghostFitness = 0 - executor.runGame(
+        return 0 - executor.runGame(
                 new MyPacManMiniMax(new SettableHeuristic(pacManGenes)),
                 new MyGhostsMiniMax(new SettableHeuristic(geneMap)), false, 0);
-        System.out.println("Ghost fitness: " + ghostFitness);
-        return ghostFitness;
     }
 }
