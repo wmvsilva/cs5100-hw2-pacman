@@ -1,5 +1,6 @@
 package ga;
 
+import entrants.ghosts.silvaw.MyGhostsMiniMax;
 import entrants.pacman.silvaw.MyPacManMiniMax;
 import pacman.Executor;
 import pacman.controllers.examples.po.POCommGhosts;
@@ -21,7 +22,7 @@ public class Evolutionizer
 
         // Evolve our population until we reach an optimum solution
         int generationCount = 0;
-        while (generationCount < 45) {// (myPop.getFittest().getFitness() < FitnessCalc.getMaxFitness()) {
+        while (generationCount < 10) {// (myPop.getFittest().getFitness() < FitnessCalc.getMaxFitness()) {
             generationCount++;
             // Evolve PacMen
             System.out.println("PacMan- Generation: " + generationCount + " Fittest: " + myPacManPop.getFittest(myGhostPop).getFitness(myGhostPop));
@@ -37,8 +38,9 @@ public class Evolutionizer
         System.out.println("Genes:");
         System.out.println(myGhostPop.getFittest(myPacManPop));
 
-        //Executor executor = new Executor(false, true);
-        //executor.runGameTimed(new MyPacManMiniMax(new SettableHeuristic(myPop.getFittest().getGeneMap())),
-        //        new POCommGhosts(50), true);
+        Executor executor = new Executor(false, true);
+        executor.runGameTimed(
+                new MyPacManMiniMax(new SettableHeuristic(myPacManPop.getFittest(myGhostPop).getGeneMap())),
+                new MyGhostsMiniMax(new SettableHeuristic(myGhostPop.getFittest(myPacManPop).getGeneMap())), true);
     }
 }
