@@ -10,6 +10,7 @@ import pacman.controllers.PacmanController;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
+import project.Heuristic;
 import project.MiniMax;
 
 import java.util.*;
@@ -23,6 +24,13 @@ public class MyPacManMiniMax extends PacmanController
      */
     private static final int MINIMAX_DEPTH = 4;
 
+    private MiniMax miniMax;
+
+    public MyPacManMiniMax(Heuristic heuristic)
+    {
+        this.miniMax = new MiniMax(heuristic);
+    }
+
     /**
      * @param game a copy of the current game
      * @param timeDue how long this turn has to complete
@@ -30,7 +38,7 @@ public class MyPacManMiniMax extends PacmanController
      */
     public MOVE getMove(Game game, long timeDue)
     {
-        return MiniMax.createMiniMaxTreeAndGetBestMove(game, MINIMAX_DEPTH, true,
+        return miniMax.createMiniMaxTreeAndGetBestMove(game, MINIMAX_DEPTH, true,
                 Optional.<Integer>absent(), Optional.<Integer>absent()).move;
     }
 }

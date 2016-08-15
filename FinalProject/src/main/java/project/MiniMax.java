@@ -18,6 +18,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class MiniMax
 {
+    private Heuristic heuristicFunction;
+
+    public MiniMax(Heuristic heuristic)
+    {
+        this.heuristicFunction = checkNotNull(heuristic);
+    }
+
 
     /**
      * @param game copy of the current game
@@ -26,11 +33,11 @@ public class MiniMax
      * @return a state-space search tree in which the leaves have been assigned values based on a heuristic. High
      * values represent PacMan winning while low values represent the ghosts winning.
      */
-    public static MoveNumber createMiniMaxTreeAndGetBestMove(Game game, int depth, boolean isPacMan, Optional<Integer> alpha, Optional<Integer> beta)
+    public MoveNumber createMiniMaxTreeAndGetBestMove(Game game, int depth, boolean isPacMan, Optional<Integer> alpha, Optional<Integer> beta)
     {
         // If there are no more branches to make or this is a terminal node
         if (depth == 0 || isEndGameState(game)) {
-            return new MoveNumber(null, heuristicVal(game));
+            return new MoveNumber(null, heuristicFunction.heuristicVal(game));
         }
 
         if (isPacMan) {
@@ -99,82 +106,6 @@ public class MiniMax
         return (game.getNumberOfActivePills() == 0 && game.getNumberOfActivePowerPills() == 0) ||
                 game.wasPacManEaten() ||
                 game.gameOver();
-    }
-
-    /**
-     * @param game state of the game to determine heuristic of
-     * @return a value determining how well the PacMan or the ghosts are doing. A larger value is better for PacMan
-     * and a lower value is better for the ghosts
-     */
-    private static int heuristicVal(Game game)
-    {
-        if (game.wasPacManEaten()) {
-            // PacMan dying should have lowest possible value
-            return Integer.MIN_VALUE;
-        }
-
-        int totalPills = game.getNumberOfActivePills() + game.getNumberOfActivePowerPills();
-        int score = game.getScore();
-
-        // Determine distance to nearest ghost
-        int distanceToBlinky = shortestPathDistanceToGhost(game, Constants.GHOST.BLINKY);
-        int distanceToInky = shortestPathDistanceToGhost(game, Constants.GHOST.INKY);
-        int distanceToPinky = shortestPathDistanceToGhost(game, Constants.GHOST.PINKY);
-        int distanceToSue = shortestPathDistanceToGhost(game, Constants.GHOST.SUE);
-        Map<Constants.GHOST, Integer> ghostsToDistance = new HashMap<>();
-        ghostsToDistance.put(Constants.GHOST.BLINKY, distanceToBlinky);
-        ghostsToDistance.put(Constants.GHOST.INKY, distanceToInky);
-        ghostsToDistance.put(Constants.GHOST.PINKY, distanceToPinky);
-        ghostsToDistance.put(Constants.GHOST.SUE, distanceToSue);
-
-        int distanceToNearestGhost = Collections.min(Lists.newArrayList(distanceToBlinky, distanceToInky,
-                distanceToPinky, distanceToSue));
-        Constants.GHOST nearestGhost = null;
-        // Determine the nearest ghost
-        for (Map.Entry<Constants.GHOST, Integer> ghostDistance : ghostsToDistance.entrySet()) {
-            if (ghostDistance.getValue() == distanceToNearestGhost) {
-                nearestGhost = ghostDistance.getKey();
-            }
-        }
-
-        // If 20 or closer, ghosts are very bad!
-        int weightedGhostScore = -500 * (20 - distanceToNearestGhost);
-        if (distanceToNearestGhost >= 20 || game.isGhostEdible(nearestGhost)) {
-            weightedGhostScore = 0;
-        }
-        // If 40 or closer and ghosts are edible, PacMan wants to get near the ghost to eat it!
-        int weightedEatingGhostScore = 0;
-        if (game.isGhostEdible(nearestGhost) && distanceToNearestGhost <= 40) {
-            weightedEatingGhostScore = 50 * (40 - distanceToNearestGhost);
-        }
-
-        // Determine all active pill indices to be used to find closest pill
-        List<Integer> activePillIndices = new ArrayList<>();
-        activePillIndices.addAll(Ints.asList(game.getActivePillsIndices()));
-        activePillIndices.addAll(Ints.asList(game.getActivePowerPillsIndices()));
-
-        List<Integer> distancesToPills = new ArrayList<>();
-        for (int pillIndice : activePillIndices) {
-            distancesToPills.add(game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), pillIndice));
-        }
-        int distanceToNearestPill = 0;
-        if (!distancesToPills.isEmpty()) {
-            // If there are no pills at the end of the level, Collections.min throws an exception
-            distanceToNearestPill = Collections.min(distancesToPills);
-        }
-
-        return -1 * totalPills + -1 * distanceToNearestPill + 100 * score + weightedGhostScore +
-                weightedEatingGhostScore;
-    }
-
-    /**
-     * @param game copy of a game
-     * @param ghost one of the four ghosts
-     * @return the shortest distance from PacMan to the given ghost
-     */
-    private static int shortestPathDistanceToGhost(Game game, Constants.GHOST ghost)
-    {
-        return game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(ghost));
     }
 
     /**

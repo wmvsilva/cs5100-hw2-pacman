@@ -10,16 +10,24 @@ import project.MiniMax;
 import java.util.EnumMap;
 import java.util.Map;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Created by pwillic on 25/02/2016.
  */
 public class MyGhostsMiniMax extends Controller<EnumMap<Constants.GHOST, Constants.MOVE>>
 {
+    private MiniMax miniMax;
+
+    MyGhostsMiniMax(MiniMax miniMax)
+    {
+        this.miniMax = checkNotNull(miniMax);
+    }
+
     @Override
     public EnumMap<Constants.GHOST, Constants.MOVE> getMove(Game game, long timeDue)
     {
-        Map<Constants.GHOST, Constants.MOVE> ghostMoves =
-                MiniMax.createMiniMaxTreeAndGetBestMove(game, 4, false, Optional.<Integer>absent(), Optional.<Integer>absent()).ghostMoves;
+        Map<Constants.GHOST, Constants.MOVE> ghostMoves = miniMax.createMiniMaxTreeAndGetBestMove(game, 4, false, Optional.<Integer>absent(), Optional.<Integer>absent()).ghostMoves;
 
         EnumMap<Constants.GHOST, Constants.MOVE> enumMap = new EnumMap<>(Constants.GHOST.class);
         for (Map.Entry<Constants.GHOST, Constants.MOVE> ghostMove : ghostMoves.entrySet()) {
