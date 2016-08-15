@@ -29,7 +29,8 @@ public class MyPacManMiniMax extends PacmanController
      */
     public MOVE getMove(Game game, long timeDue)
     {
-        return createMiniMaxTreeAndGetBestMove(game, MINIMAX_DEPTH, true).move;
+        return createMiniMaxTreeAndGetBestMove(game, MINIMAX_DEPTH, true,
+                Optional.<Integer>absent(), Optional.<Integer>absent()).move;
     }
 
     /**
@@ -39,7 +40,7 @@ public class MyPacManMiniMax extends PacmanController
      * @return a state-space search tree in which the leaves have been assigned values based on a heuristic. High
      * values represent PacMan winning while low values represent the ghosts winning.
      */
-    private MoveNumber createMiniMaxTreeAndGetBestMove(Game game, int depth, boolean isPacMan)
+    private MoveNumber createMiniMaxTreeAndGetBestMove(Game game, int depth, boolean isPacMan, Optional<Integer> alpha, Optional<Integer> beta)
     {
         // If there are no more branches to make or this is a terminal node
         if (depth == 0 || isEndGameState(game)) {
@@ -47,27 +48,28 @@ public class MyPacManMiniMax extends PacmanController
         }
 
         if (isPacMan) {
+            Optional<MoveNumber> val = Optional.absent();
             // Create tree with branches for PacMan's moves at the top
-
-            // Create branches depending on PacMan's possible moves
-            Map<MOVE, MoveNumber> branches = new HashMap<>();
 
             Set<MOVE> possiblePacManMoves =
                     new HashSet<>(Arrays.asList(game.getPossibleMoves(game.getPacmanCurrentNodeIndex())));
 
             for (MOVE move : possiblePacManMoves) {
                 Game nextGameState = stateAfterPacMove(move, game);
-                branches.put(move, createMiniMaxTreeAndGetBestMove(nextGameState, depth - 1, false));
-            }
-
-            MoveNumber maximizing = null;
-            for (Map.Entry<MOVE, MoveNumber> entry : branches.entrySet()) {
-                if (maximizing == null || entry.getValue().hValue > maximizing.hValue) {
-                    maximizing = entry.getValue();
-                    maximizing.setMove(entry.getKey());
+                MoveNumber moveNumber = createMiniMaxTreeAndGetBestMove(nextGameState, depth - 1, false, alpha, beta);
+                moveNumber.setMove(move);
+                if (!val.isPresent() || moveNumber.hValue > val.get().hValue) {
+                    val = Optional.of(moveNumber);
+                }
+                if (!alpha.isPresent() || val.get().hValue > alpha.get()) {
+                    alpha = Optional.of(val.get().hValue);
+                }
+                if (beta.isPresent() && beta.get() <= alpha.get()) {
+                    break;
                 }
             }
-            return maximizing;
+
+            return val.get();
         } else {
             // Create trees for possible ghost moves
 
@@ -81,20 +83,23 @@ public class MyPacManMiniMax extends PacmanController
                     possibleInkyMoves,
                     possiblePinkyMoves,
                     possibleSueMoves);
-            // For all possible move sets, calculate game state and create branch of tree
-            Set<MoveNumber> ghostBranches = new HashSet<>();
+
+            Optional<MoveNumber> val = Optional.absent();
             for (Map<GHOST, MOVE> possibleGhostMoves : possibleGhostCombinations) {
                 Game gameStateAfterGhosts = gameStateAfterGhosts(game, possibleGhostMoves);
-                ghostBranches.add(createMiniMaxTreeAndGetBestMove(gameStateAfterGhosts, depth - 1, true));
-            }
-
-            MoveNumber minimizing = null;
-            for (MoveNumber moveNumber : ghostBranches) {
-                if (minimizing == null || moveNumber.hValue < minimizing.hValue) {
-                    minimizing = moveNumber;
+                MoveNumber moveNumber = createMiniMaxTreeAndGetBestMove(gameStateAfterGhosts, depth - 1, true, alpha, beta);
+                if (!val.isPresent() || moveNumber.hValue < val.get().hValue) {
+                    val = Optional.of(moveNumber);
+                }
+                if (!beta.isPresent() || moveNumber.hValue < beta.get()) {
+                    beta = Optional.of(moveNumber.hValue);
+                }
+                if (alpha.isPresent() && beta.get() <= alpha.get()) {
+                    break;
                 }
             }
-            return minimizing;
+
+            return val.get();
         }
     }
 
