@@ -10,6 +10,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 abstract public class Individual
 {
+    public static final int MIN_WEIGHT = -1000;
+    public static final int MAX_WEIGHT = 1000;
     private List<Pair> genes = generateEmptyGenes();
     // Cache
     private int fitness = 0;
@@ -27,7 +29,7 @@ abstract public class Individual
     public void generateIndividual() {
         genes.clear();
         for (String geneName : WeightNames.getNames()) {
-            genes.add(new Pair(geneName, ThreadLocalRandom.current().nextInt(-1000, 1000 + 1)));
+            genes.add(new Pair(geneName, ThreadLocalRandom.current().nextInt(MIN_WEIGHT, MAX_WEIGHT + 1)));
         }
     }
 

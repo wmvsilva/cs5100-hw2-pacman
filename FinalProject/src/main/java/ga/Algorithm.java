@@ -1,5 +1,10 @@
 package ga;
 
+import java.util.concurrent.ThreadLocalRandom;
+
+import static ga.Individual.MAX_WEIGHT;
+import static ga.Individual.MIN_WEIGHT;
+
 /**
  * Created by William on 8/15/2016.
  */
@@ -72,7 +77,7 @@ public class Algorithm {
         for (int i = 0; i < indiv.size(); i++) {
             if (Math.random() <= mutationRate) {
                 // Create random gene
-                byte gene = (byte) Math.round(Math.random());
+                int gene = ThreadLocalRandom.current().nextInt(MIN_WEIGHT, MAX_WEIGHT + 1);
                 indiv.setGene(i, gene);
             }
         }
