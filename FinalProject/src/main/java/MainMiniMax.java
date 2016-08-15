@@ -14,6 +14,6 @@ public class MainMiniMax
     public static void main(String[] args) {
 
         Executor executor = new Executor(false, true);
-        executor.runGame(new MyPacManMiniMax(new PacManHeuristic()), new MyGhostsMiniMax(new PacManHeuristic()), true, 0);
+        executor.runGameTimed(new MyPacManMiniMax(new PacManHeuristic()), new MyGhostsMiniMax(new PacManHeuristic()), true);
     }
 }
