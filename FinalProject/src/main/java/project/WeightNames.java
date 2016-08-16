@@ -52,6 +52,9 @@ public class WeightNames
         names.add("pacManLastMoveLeft");
         names.add("pacManLastMoveDown");
 
+        names.add("pacManDistanceToNearestGhostIfUnder10");
+        names.add("pacManDistanceToNearestGhostIfUnder5");
+
         return names;
     }
 

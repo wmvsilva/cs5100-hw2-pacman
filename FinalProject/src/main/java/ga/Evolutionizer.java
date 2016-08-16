@@ -22,7 +22,7 @@ public class Evolutionizer
 
         // Evolve our population until we reach an optimum solution
         int generationCount = 0;
-        while (generationCount < 25) {// (myPop.getFittest().getFitness() < FitnessCalc.getMaxFitness()) {
+        while (generationCount < 5) {// (myPop.getFittest().getFitness() < FitnessCalc.getMaxFitness()) {
             generationCount++;
             // Evolve PacMen
             System.out.println("PacMan- Generation: " + generationCount + " Fittest: " + myPacManPop.getFittest(myGhostPop).getFitness(myGhostPop));

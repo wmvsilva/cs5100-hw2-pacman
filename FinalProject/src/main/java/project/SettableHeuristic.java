@@ -44,6 +44,7 @@ public class SettableHeuristic implements Heuristic
                 nearestGhost = ghostDistance.getKey();
             }
         }
+        boolean isNearestGhostEdible = game.isGhostEdible(nearestGhost);
         int distanceToNearestGhostIfNotEdible = distanceToNearestGhost;
         if (game.isGhostEdible(nearestGhost)) {
             distanceToNearestGhostIfNotEdible = 0;
@@ -83,7 +84,7 @@ public class SettableHeuristic implements Heuristic
                 fieldToWeights.get("pacManDistanceToSue") * shortestPathDistanceToGhost(game, Constants.GHOST.SUE) +
                 fieldToWeights.get("pacManDistanceToNearestGhostIfNotEdible") * distanceToNearestGhostIfNotEdible +
                 fieldToWeights.get("pacManNearestGhostEdible") * boolToNum(game.isGhostEdible(nearestGhost)) +
-                fieldToWeights.get("pacManDistanceToNearestGhostUnder20") * boolToNum(distanceToNearestGhost < 20) +
+                fieldToWeights.get("pacManDistanceToNearestGhostUnder20") * ((distanceToNearestGhost < 20 && isNearestGhostEdible) ? distanceToNearestGhost : 0) +
                 fieldToWeights.get("pacManNearestGhostEdibleAndUnder40") * boolToNum(game.isGhostEdible(nearestGhost) && distanceToNearestGhost <= 40) +
                 fieldToWeights.get("pacManDistanceToNearestPill") * distanceToNearestPill +
 
@@ -106,7 +107,10 @@ public class SettableHeuristic implements Heuristic
                 fieldToWeights.get("distanceToNearestPillAboveFive") * boolToNum(distanceToNearestPill >= 5) +
 
                 fieldToWeights.get("pacManLastMoveLeft") * boolToNum(game.getPacmanLastMoveMade() == Constants.MOVE.LEFT) +
-                fieldToWeights.get("pacManLastMoveDown") * boolToNum(game.getPacmanLastMoveMade() == Constants.MOVE.DOWN);
+                fieldToWeights.get("pacManLastMoveDown") * boolToNum(game.getPacmanLastMoveMade() == Constants.MOVE.DOWN) +
+
+                fieldToWeights.get("pacManDistanceToNearestGhostIfUnder10") * ((distanceToNearestGhost < 10 && isNearestGhostEdible) ? distanceToNearestGhost : 0) +
+                fieldToWeights.get("pacManDistanceToNearestGhostIfUnder5") * ((distanceToNearestGhost < 5 && isNearestGhostEdible) ? distanceToNearestGhost : 0);
     }
 
     private static int boolToNum(boolean bool)
