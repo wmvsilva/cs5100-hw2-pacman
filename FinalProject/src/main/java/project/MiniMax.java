@@ -16,11 +16,28 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class MiniMax
 {
+    private Queue<MOVE> moveHistory;
     private Heuristic heuristicFunction;
 
     public MiniMax(Heuristic heuristic)
     {
         this.heuristicFunction = checkNotNull(heuristic);
+        this.moveHistory = new LinkedList<>();
+    }
+
+    public MoveNumber createMiniMaxTreeAndGetBestMove(Game game, int depth, boolean isPacMan,
+                                                      Optional<Integer> alpha, Optional<Integer> beta)
+    {
+        Queue<MOVE> copyOfMoveHistory = new LinkedList<>(moveHistory);
+        MoveNumber moveNumber = createMiniMaxTreeAndGetBestMoveHelper(game, depth, isPacMan, alpha, beta,
+                copyOfMoveHistory);
+        if (isPacMan && moveNumber.move != null) {
+            moveHistory.add(moveNumber.move);
+        }
+        if (moveHistory.size() > 20) {
+            moveHistory.remove();
+        }
+        return moveNumber;
     }
 
     /**
@@ -30,15 +47,16 @@ public class MiniMax
      * @return a state-space search tree in which the leaves have been assigned values based on a heuristic. High
      * values represent PacMan winning while low values represent the ghosts winning.
      */
-    public MoveNumber createMiniMaxTreeAndGetBestMove(Game game, int depth, boolean isPacMan,
-                                                      Optional<Integer> alpha, Optional<Integer> beta)
+    public MoveNumber createMiniMaxTreeAndGetBestMoveHelper(Game game, int depth, boolean isPacMan,
+                                                      Optional<Integer> alpha, Optional<Integer> beta,
+                                                            Queue<MOVE> moveHistoryCopy)
     {
         Optional<Integer> newAlpha = alpha;
         Optional<Integer> newBeta = beta;
 
         // If there are no more branches to make or this is a terminal node
         if (depth == 0 || isEndGameState(game)) {
-            return new MoveNumber(null, heuristicFunction.heuristicVal(game));
+            return new MoveNumber(null, heuristicFunction.heuristicVal(game, moveHistoryCopy));
         } else if (isPacMan) {
             Optional<MoveNumber> val = Optional.absent();
             // Create tree with branches for PacMan's moves at the top
@@ -48,8 +66,10 @@ public class MiniMax
 
             for (MOVE move : possiblePacManMoves) {
                 Game nextGameState = stateAfterPacMove(move, game);
-                MoveNumber moveNumber = createMiniMaxTreeAndGetBestMove(nextGameState, depth - 1, false,
-                        newAlpha, newBeta);
+                Queue<MOVE> copyOfMoveHistory = new LinkedList<>(moveHistoryCopy);
+                copyOfMoveHistory.add(move);
+                MoveNumber moveNumber = createMiniMaxTreeAndGetBestMoveHelper(nextGameState, depth - 1, false,
+                        newAlpha, newBeta, copyOfMoveHistory);
                 moveNumber.setMove(move);
                 if (!val.isPresent() || moveNumber.hValue > val.get().hValue) {
                     val = Optional.of(moveNumber);
@@ -80,8 +100,8 @@ public class MiniMax
             Optional<MoveNumber> val = Optional.absent();
             for (Map<GHOST, MOVE> possibleGhostMoves : possibleGhostCombinations) {
                 Game gameStateAfterGhosts = gameStateAfterGhosts(game, possibleGhostMoves);
-                MoveNumber moveNumber = createMiniMaxTreeAndGetBestMove(gameStateAfterGhosts, depth - 1, true,
-                        newAlpha, newBeta);
+                MoveNumber moveNumber = createMiniMaxTreeAndGetBestMoveHelper(gameStateAfterGhosts, depth - 1, true,
+                        newAlpha, newBeta, moveHistoryCopy);
                 moveNumber.setGhostMoves(possibleGhostMoves);
                 if (!val.isPresent() || moveNumber.hValue < val.get().hValue) {
                     val = Optional.of(moveNumber);

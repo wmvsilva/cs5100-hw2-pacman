@@ -12,8 +12,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 abstract public class Individual
 {
-    public static final int MIN_WEIGHT = -10000;
-    public static final int MAX_WEIGHT = 10000;
+    public static final int MIN_WEIGHT = -100;
+    public static final int MAX_WEIGHT = 100;
     private List<Pair> genes = generateEmptyGenes();
     // Cache
     private Optional<Integer> fitness = Optional.absent();

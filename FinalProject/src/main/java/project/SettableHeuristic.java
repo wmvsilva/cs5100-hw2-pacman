@@ -8,6 +8,7 @@ import pacman.game.Game;
 import java.util.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.Math.abs;
 
 /**
  * Created by William on 8/15/2016.
@@ -15,14 +16,25 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class SettableHeuristic implements Heuristic
 {
     private Map<String, Integer> fieldToWeights;
+    private static final Map<Constants.MOVE, Constants.MOVE> moveToOppositeMoves = moveToOppositeMovesMap();
 
     public SettableHeuristic(Map<String, Integer> fieldToWeights)
     {
         this.fieldToWeights = checkNotNull(fieldToWeights);
     }
 
+    private static Map<Constants.MOVE, Constants.MOVE> moveToOppositeMovesMap()
+    {
+        Map<Constants.MOVE, Constants.MOVE> moveOppositeMoveMap = new HashMap<>();
+        moveOppositeMoveMap.put(Constants.MOVE.DOWN, Constants.MOVE.UP);
+        moveOppositeMoveMap.put(Constants.MOVE.UP, Constants.MOVE.DOWN);
+        moveOppositeMoveMap.put(Constants.MOVE.RIGHT, Constants.MOVE.LEFT);
+        moveOppositeMoveMap.put(Constants.MOVE.LEFT, Constants.MOVE.RIGHT);
+        return moveOppositeMoveMap;
+    }
+
     @Override
-    public int heuristicVal(Game game)
+    public int heuristicVal(Game game, Queue<Constants.MOVE> moveHistory)
     {
         // Determine distance to nearest ghost
         int distanceToBlinky = shortestPathDistanceToGhost(game, Constants.GHOST.BLINKY);
@@ -74,6 +86,25 @@ public class SettableHeuristic implements Heuristic
             distanceToNextNearestPillMOreThan10IfPillJustEaten = distanceToNearestPill;
         }
 
+        Set<Constants.MOVE> moveHistorySet = new HashSet<>(moveHistory);
+        int unvariedMoves = 0;
+        if (moveHistorySet.size() == 2) {
+            Constants.MOVE move = moveHistorySet.iterator().next();
+            int occurrences = Collections.frequency(moveHistory, move);
+            double percentage = (double) occurrences / (double) moveHistory.size();
+            unvariedMoves = (int) (Math.abs(0.5 - percentage) * 100);
+        }
+
+        boolean reversedMove = false;
+        if (moveHistory.size() >= 2) {
+            List<Constants.MOVE> moveList = new ArrayList<>(moveHistory);
+            Constants.MOVE lastMove = moveList.get(moveHistory.size() - 1);
+            Constants.MOVE secondToLastMove = moveList.get(moveHistory.size() - 2);
+            if (moveToOppositeMoves.get(lastMove) == secondToLastMove) {
+                reversedMove = true;
+            }
+        }
+
         return fieldToWeights.get("pacManEaten") * boolToNum(game.wasPacManEaten()) +
                 fieldToWeights.get("numActivePills") * game.getNumberOfActivePills() +
                 fieldToWeights.get("numActivePowerPills") * game.getNumberOfActivePowerPills() +
@@ -110,7 +141,10 @@ public class SettableHeuristic implements Heuristic
                 fieldToWeights.get("pacManLastMoveDown") * boolToNum(game.getPacmanLastMoveMade() == Constants.MOVE.DOWN) +
 
                 fieldToWeights.get("pacManDistanceToNearestGhostIfUnder10") * ((distanceToNearestGhost < 10 && isNearestGhostEdible) ? distanceToNearestGhost : 0) +
-                fieldToWeights.get("pacManDistanceToNearestGhostIfUnder5") * ((distanceToNearestGhost < 5 && isNearestGhostEdible) ? distanceToNearestGhost : 0);
+                fieldToWeights.get("pacManDistanceToNearestGhostIfUnder5") * ((distanceToNearestGhost < 5 && isNearestGhostEdible) ? distanceToNearestGhost : 0) +
+
+                fieldToWeights.get("likelyNotStuck") * unvariedMoves +
+                fieldToWeights.get("reversedDirection") * boolToNum(reversedMove);
     }
 
     private static int boolToNum(boolean bool)

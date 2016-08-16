@@ -55,6 +55,9 @@ public class WeightNames
         names.add("pacManDistanceToNearestGhostIfUnder10");
         names.add("pacManDistanceToNearestGhostIfUnder5");
 
+        names.add("likelyNotStuck");
+        names.add("reversedDirection");
+
         return names;
     }
 

@@ -4,6 +4,7 @@ import examples.commGhosts.POCommGhosts;
 import pacman.Executor;
 import pacman.controllers.examples.RandomGhosts;
 import project.PacManHeuristic;
+import project.SettableHeuristic;
 
 
 /**
@@ -14,6 +15,6 @@ public class MainMiniMax
     public static void main(String[] args) {
 
         Executor executor = new Executor(false, true);
-        executor.runGameTimed(new MyPacManMiniMax(new PacManHeuristic()), new MyGhostsMiniMax(new PacManHeuristic()), true);
+        executor.runGameTimed(new MyPacManMiniMax(new PacManHeuristic()), new POCommGhosts(50), true);
     }
 }

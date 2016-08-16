@@ -12,7 +12,7 @@ import java.util.*;
  */
 public class PacManHeuristic implements Heuristic
 {
-    public int heuristicVal(Game game)
+    public int heuristicVal(Game game, Queue<Constants.MOVE> ignored)
     {
         if (game.wasPacManEaten()) {
             // PacMan dying should have lowest possible value
