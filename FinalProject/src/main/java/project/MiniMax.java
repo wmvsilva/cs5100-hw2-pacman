@@ -1,12 +1,10 @@
 package project;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.common.primitives.Ints;
 import com.sun.istack.internal.Nullable;
-import entrants.pacman.silvaw.MyPacManMiniMax;
-import pacman.game.Constants;
+import pacman.game.Constants.MOVE;
+import pacman.game.Constants.GHOST;
 import pacman.game.Game;
 
 import java.util.*;
@@ -25,7 +23,6 @@ public class MiniMax
         this.heuristicFunction = checkNotNull(heuristic);
     }
 
-
     /**
      * @param game copy of the current game
      * @param depth the depth of the tree to create
@@ -33,21 +30,20 @@ public class MiniMax
      * @return a state-space search tree in which the leaves have been assigned values based on a heuristic. High
      * values represent PacMan winning while low values represent the ghosts winning.
      */
-    public MoveNumber createMiniMaxTreeAndGetBestMove(Game game, int depth, boolean isPacMan, Optional<Integer> alpha, Optional<Integer> beta)
+    public MoveNumber createMiniMaxTreeAndGetBestMove(Game game, int depth, boolean isPacMan,
+                                                      Optional<Integer> alpha, Optional<Integer> beta)
     {
         // If there are no more branches to make or this is a terminal node
         if (depth == 0 || isEndGameState(game)) {
             return new MoveNumber(null, heuristicFunction.heuristicVal(game));
-        }
-
-        if (isPacMan) {
+        } else if (isPacMan) {
             Optional<MoveNumber> val = Optional.absent();
             // Create tree with branches for PacMan's moves at the top
 
-            Set<Constants.MOVE> possiblePacManMoves =
-                    new HashSet<>(Arrays.asList(game.getPossibleMoves(game.getPacmanCurrentNodeIndex())));
+            List<MOVE> possiblePacManMoves =
+                    Arrays.asList(game.getPossibleMoves(game.getPacmanCurrentNodeIndex()));
 
-            for (Constants.MOVE move : possiblePacManMoves) {
+            for (MOVE move : possiblePacManMoves) {
                 Game nextGameState = stateAfterPacMove(move, game);
                 MoveNumber moveNumber = createMiniMaxTreeAndGetBestMove(nextGameState, depth - 1, false, alpha, beta);
                 moveNumber.setMove(move);
@@ -67,18 +63,18 @@ public class MiniMax
             // Create trees for possible ghost moves
 
             // Determine possible moves for each ghost
-            Set<Constants.MOVE> possibleBlinkyMoves = getPossibleGhostMoves(game, Constants.GHOST.BLINKY);
-            Set<Constants.MOVE> possibleInkyMoves = getPossibleGhostMoves(game, Constants.GHOST.INKY);
-            Set<Constants.MOVE> possiblePinkyMoves = getPossibleGhostMoves(game, Constants.GHOST.PINKY);
-            Set<Constants.MOVE> possibleSueMoves = getPossibleGhostMoves(game, Constants.GHOST.SUE);
+            Set<MOVE> possibleBlinkyMoves = getPossibleGhostMoves(game, GHOST.BLINKY);
+            Set<MOVE> possibleInkyMoves = getPossibleGhostMoves(game, GHOST.INKY);
+            Set<MOVE> possiblePinkyMoves = getPossibleGhostMoves(game, GHOST.PINKY);
+            Set<MOVE> possibleSueMoves = getPossibleGhostMoves(game, GHOST.SUE);
             // Determine all possible combinations of ghost moves that can occur
-            Set<Map<Constants.GHOST, Constants.MOVE>> possibleGhostCombinations = calculateGhostCombinations(possibleBlinkyMoves,
+            Set<Map<GHOST, MOVE>> possibleGhostCombinations = calculateGhostCombinations(possibleBlinkyMoves,
                     possibleInkyMoves,
                     possiblePinkyMoves,
                     possibleSueMoves);
 
             Optional<MoveNumber> val = Optional.absent();
-            for (Map<Constants.GHOST, Constants.MOVE> possibleGhostMoves : possibleGhostCombinations) {
+            for (Map<GHOST, MOVE> possibleGhostMoves : possibleGhostCombinations) {
                 Game gameStateAfterGhosts = gameStateAfterGhosts(game, possibleGhostMoves);
                 MoveNumber moveNumber = createMiniMaxTreeAndGetBestMove(gameStateAfterGhosts, depth - 1, true, alpha, beta);
                 moveNumber.setGhostMoves(possibleGhostMoves);
@@ -113,7 +109,7 @@ public class MiniMax
      * @param curGame current game (which should not be modified in any way)
      * @return a copy of the current game except PacMan has taken the given move
      */
-    private static Game stateAfterPacMove(Constants.MOVE pacMove, Game curGame)
+    private static Game stateAfterPacMove(MOVE pacMove, Game curGame)
     {
         Game copyOfGame = curGame.copy();
         copyOfGame.updatePacMan(pacMove);
@@ -127,23 +123,23 @@ public class MiniMax
      * @param possibleSueMoves possible moves for Sue ghost
      * @return a set containing a representation of all possible move combinations that the ghosts could make
      */
-    private static Set<Map<Constants.GHOST, Constants.MOVE>> calculateGhostCombinations(Set<Constants.MOVE> possibleBlinkyMoves,
-                                                                                 Set<Constants.MOVE> possibleInkyMoves,
-                                                                                 Set<Constants.MOVE> possiblePinkyMoves,
-                                                                                 Set<Constants.MOVE> possibleSueMoves)
+    private static Set<Map<GHOST, MOVE>> calculateGhostCombinations(Set<MOVE> possibleBlinkyMoves,
+                                                                                 Set<MOVE> possibleInkyMoves,
+                                                                                 Set<MOVE> possiblePinkyMoves,
+                                                                                 Set<MOVE> possibleSueMoves)
     {
-        Set<Map<Constants.GHOST, Constants.MOVE>> result = new HashSet<>();
+        Set<Map<GHOST, MOVE>> result = new HashSet<>();
 
-        for (Constants.MOVE blinkyMove : possibleBlinkyMoves) {
-            for (Constants.MOVE inkyMove : possibleInkyMoves) {
-                for (Constants.MOVE pinkyMove : possiblePinkyMoves) {
-                    for (Constants.MOVE sueMove : possibleSueMoves) {
+        for (MOVE blinkyMove : possibleBlinkyMoves) {
+            for (MOVE inkyMove : possibleInkyMoves) {
+                for (MOVE pinkyMove : possiblePinkyMoves) {
+                    for (MOVE sueMove : possibleSueMoves) {
 
-                        Map<Constants.GHOST, Constants.MOVE> possibleMoveSet = new HashMap<>();
-                        possibleMoveSet.put(Constants.GHOST.BLINKY, blinkyMove);
-                        possibleMoveSet.put(Constants.GHOST.INKY, inkyMove);
-                        possibleMoveSet.put(Constants.GHOST.PINKY, pinkyMove);
-                        possibleMoveSet.put(Constants.GHOST.SUE, sueMove);
+                        Map<GHOST, MOVE> possibleMoveSet = new HashMap<>();
+                        possibleMoveSet.put(GHOST.BLINKY, blinkyMove);
+                        possibleMoveSet.put(GHOST.INKY, inkyMove);
+                        possibleMoveSet.put(GHOST.PINKY, pinkyMove);
+                        possibleMoveSet.put(GHOST.SUE, sueMove);
 
                         result.add(possibleMoveSet);
                     }
@@ -159,13 +155,13 @@ public class MiniMax
      * @param ghostMoves map of ghosts to the moves they should have performed in result
      * @return copy of the given game in which the ghosts have performed the given moves
      */
-    private static Game gameStateAfterGhosts(Game game, Map<Constants.GHOST, Constants.MOVE> ghostMoves)
+    private static Game gameStateAfterGhosts(Game game, Map<GHOST, MOVE> ghostMoves)
     {
         Game copyOfGame = game.copy();
         // game's method updateGhosts takes in an EnumMap which we have to convert the given map to.
-        EnumMap<Constants.GHOST, Constants.MOVE> enumMap = new EnumMap<>(Constants.GHOST.class);
+        EnumMap<GHOST, MOVE> enumMap = new EnumMap<>(GHOST.class);
 
-        for (Map.Entry<Constants.GHOST, Constants.MOVE> ghostMove : ghostMoves.entrySet()) {
+        for (Map.Entry<GHOST, MOVE> ghostMove : ghostMoves.entrySet()) {
             enumMap.put(ghostMove.getKey(), ghostMove.getValue());
         }
         copyOfGame.updateGhosts(enumMap);
@@ -178,14 +174,14 @@ public class MiniMax
      * @param ghost one of the four ghosts
      * @return set of all possible moves that the given ghost can perform in the given game state
      */
-    public static Set<Constants.MOVE> getPossibleGhostMoves(Game game, Constants.GHOST ghost)
+    public static Set<MOVE> getPossibleGhostMoves(Game game, GHOST ghost)
     {
-        Set<Constants.MOVE> result = Sets.newHashSet(game.getPossibleMoves(game.getGhostCurrentNodeIndex(ghost),
+        Set<MOVE> result = Sets.newHashSet(game.getPossibleMoves(game.getGhostCurrentNodeIndex(ghost),
                 game.getGhostLastMoveMade(ghost)));
 
         if (result.isEmpty()) {
             // If ghosts can't perform any moves, they have to go in straight line (or the neutral move)
-            return Sets.newHashSet(Constants.MOVE.NEUTRAL);
+            return Sets.newHashSet(MOVE.NEUTRAL);
         }
         return result;
     }
@@ -198,25 +194,25 @@ public class MiniMax
         /**
          * A move for PacMan to use
          */
-        public Constants.MOVE move;
-        public Map<Constants.GHOST, Constants.MOVE> ghostMoves;
+        public MOVE move;
+        public Map<GHOST, MOVE> ghostMoves;
         /**
          * Heuristic value
          */
         public int hValue;
 
-        MoveNumber(@Nullable Constants.MOVE move, int hValue)
+        MoveNumber(@Nullable MOVE move, int hValue)
         {
             this.move = move;
             this.hValue = checkNotNull(hValue);
         }
 
-        public void setMove(Constants.MOVE move)
+        public void setMove(MOVE move)
         {
             this.move = checkNotNull(move);
         }
 
-        public void setGhostMoves(Map<Constants.GHOST, Constants.MOVE> ghostMoves)
+        public void setGhostMoves(Map<GHOST, MOVE> ghostMoves)
         {
             this.ghostMoves = checkNotNull(ghostMoves);
         }
