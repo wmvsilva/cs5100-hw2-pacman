@@ -115,7 +115,7 @@ public class SettableHeuristic implements Heuristic
                 fieldToWeights.get("pacManDistanceToSue") * shortestPathDistanceToGhost(game, Constants.GHOST.SUE) +
                 fieldToWeights.get("pacManDistanceToNearestGhostIfNotEdible") * distanceToNearestGhostIfNotEdible +
                 fieldToWeights.get("pacManNearestGhostEdible") * boolToNum(game.isGhostEdible(nearestGhost)) +
-                fieldToWeights.get("pacManDistanceToNearestGhostUnder20") * ((distanceToNearestGhost < 20 && isNearestGhostEdible) ? distanceToNearestGhost : 0) +
+                fieldToWeights.get("pacManDistanceToNearestGhostUnder20") * ((distanceToNearestGhost < 20 && !isNearestGhostEdible) ? distanceToNearestGhost : 0) +
                 fieldToWeights.get("pacManNearestGhostEdibleAndUnder40") * boolToNum(game.isGhostEdible(nearestGhost) && distanceToNearestGhost <= 40) +
                 fieldToWeights.get("pacManDistanceToNearestPill") * distanceToNearestPill +
 
@@ -140,11 +140,14 @@ public class SettableHeuristic implements Heuristic
                 fieldToWeights.get("pacManLastMoveLeft") * boolToNum(game.getPacmanLastMoveMade() == Constants.MOVE.LEFT) +
                 fieldToWeights.get("pacManLastMoveDown") * boolToNum(game.getPacmanLastMoveMade() == Constants.MOVE.DOWN) +
 
-                fieldToWeights.get("pacManDistanceToNearestGhostIfUnder10") * ((distanceToNearestGhost < 10 && isNearestGhostEdible) ? distanceToNearestGhost : 0) +
-                fieldToWeights.get("pacManDistanceToNearestGhostIfUnder5") * ((distanceToNearestGhost < 5 && isNearestGhostEdible) ? distanceToNearestGhost : 0) +
+                fieldToWeights.get("pacManDistanceToNearestGhostIfUnder10") * ((distanceToNearestGhost < 10 && !isNearestGhostEdible) ? distanceToNearestGhost : 0) +
+                fieldToWeights.get("pacManDistanceToNearestGhostIfUnder5") * ((distanceToNearestGhost < 5 && !isNearestGhostEdible) ? distanceToNearestGhost : 0) +
 
                 fieldToWeights.get("likelyNotStuck") * unvariedMoves +
-                fieldToWeights.get("reversedDirection") * boolToNum(reversedMove);
+                fieldToWeights.get("reversedDirection") * boolToNum(reversedMove) +
+
+                fieldToWeights.get("pacManDistanceToNearestGhostEdibleIfUnder10") * ((distanceToNearestGhost < 10 && isNearestGhostEdible) ? distanceToNearestGhost : 0) +
+                fieldToWeights.get("pacManDistanceToNearestGhostEdibleIfUnder5") * ((distanceToNearestGhost < 5 && isNearestGhostEdible) ? distanceToNearestGhost : 0);
     }
 
     private static int boolToNum(boolean bool)
