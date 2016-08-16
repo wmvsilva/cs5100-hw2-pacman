@@ -87,7 +87,7 @@ public class SettableHeuristic implements Heuristic
                 fieldToWeights.get("pacManNearestGhostEdibleAndUnder40") * boolToNum(game.isGhostEdible(nearestGhost) && distanceToNearestGhost <= 40) +
                 fieldToWeights.get("pacManDistanceToNearestPill") * distanceToNearestPill +
 
-                fieldToWeights.get("numTotalActivePills") * game.getNumberOfActivePills() + game.getNumberOfActivePowerPills() +
+                fieldToWeights.get("numTotalActivePills") * (game.getNumberOfActivePills() + game.getNumberOfActivePowerPills()) +
                 fieldToWeights.get("numLevel") * game.getCurrentLevel() +
                 fieldToWeights.get("levelTime") * game.getCurrentLevelTime() +
                 fieldToWeights.get("totalGameTime") * game.getTotalTime() +
