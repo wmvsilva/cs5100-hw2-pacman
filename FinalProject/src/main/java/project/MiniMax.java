@@ -33,6 +33,9 @@ public class MiniMax
     public MoveNumber createMiniMaxTreeAndGetBestMove(Game game, int depth, boolean isPacMan,
                                                       Optional<Integer> alpha, Optional<Integer> beta)
     {
+        Optional<Integer> newAlpha = alpha;
+        Optional<Integer> newBeta = beta;
+
         // If there are no more branches to make or this is a terminal node
         if (depth == 0 || isEndGameState(game)) {
             return new MoveNumber(null, heuristicFunction.heuristicVal(game));
@@ -45,15 +48,16 @@ public class MiniMax
 
             for (MOVE move : possiblePacManMoves) {
                 Game nextGameState = stateAfterPacMove(move, game);
-                MoveNumber moveNumber = createMiniMaxTreeAndGetBestMove(nextGameState, depth - 1, false, alpha, beta);
+                MoveNumber moveNumber = createMiniMaxTreeAndGetBestMove(nextGameState, depth - 1, false,
+                        newAlpha, newBeta);
                 moveNumber.setMove(move);
                 if (!val.isPresent() || moveNumber.hValue > val.get().hValue) {
                     val = Optional.of(moveNumber);
                 }
-                if (!alpha.isPresent() || val.get().hValue > alpha.get()) {
-                    alpha = Optional.of(val.get().hValue);
+                if (!newAlpha.isPresent() || val.get().hValue > newAlpha.get()) {
+                    newAlpha = Optional.of(val.get().hValue);
                 }
-                if (beta.isPresent() && beta.get() <= alpha.get()) {
+                if (newBeta.isPresent() && newBeta.get() <= newAlpha.get()) {
                     break;
                 }
             }
@@ -76,15 +80,16 @@ public class MiniMax
             Optional<MoveNumber> val = Optional.absent();
             for (Map<GHOST, MOVE> possibleGhostMoves : possibleGhostCombinations) {
                 Game gameStateAfterGhosts = gameStateAfterGhosts(game, possibleGhostMoves);
-                MoveNumber moveNumber = createMiniMaxTreeAndGetBestMove(gameStateAfterGhosts, depth - 1, true, alpha, beta);
+                MoveNumber moveNumber = createMiniMaxTreeAndGetBestMove(gameStateAfterGhosts, depth - 1, true,
+                        newAlpha, newBeta);
                 moveNumber.setGhostMoves(possibleGhostMoves);
                 if (!val.isPresent() || moveNumber.hValue < val.get().hValue) {
                     val = Optional.of(moveNumber);
                 }
-                if (!beta.isPresent() || moveNumber.hValue < beta.get()) {
-                    beta = Optional.of(moveNumber.hValue);
+                if (!newBeta.isPresent() || moveNumber.hValue < newBeta.get()) {
+                    newBeta = Optional.of(moveNumber.hValue);
                 }
-                if (alpha.isPresent() && beta.get() <= alpha.get()) {
+                if (newAlpha.isPresent() && newBeta.get() <= newAlpha.get()) {
                     break;
                 }
             }
