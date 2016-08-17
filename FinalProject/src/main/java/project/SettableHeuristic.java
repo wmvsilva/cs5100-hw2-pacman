@@ -109,10 +109,10 @@ public class SettableHeuristic implements Heuristic
                 fieldToWeights.get("numActivePills") * game.getNumberOfActivePills() +
                 fieldToWeights.get("numActivePowerPills") * game.getNumberOfActivePowerPills() +
                 fieldToWeights.get("score") * game.getScore() +
-                //fieldToWeights.get("pacManDistanceToBlinky") * shortestPathDistanceToGhost(game, Constants.GHOST.BLINKY) +
-                //fieldToWeights.get("pacManDistanceToInky") * shortestPathDistanceToGhost(game, Constants.GHOST.INKY) +
-                //fieldToWeights.get("pacManDistanceToPinky") * shortestPathDistanceToGhost(game, Constants.GHOST.PINKY) +
-                //fieldToWeights.get("pacManDistanceToSue") * shortestPathDistanceToGhost(game, Constants.GHOST.SUE) +
+                fieldToWeights.get("pacManDistanceToBlinky") * shortestPathDistanceToGhost(game, Constants.GHOST.BLINKY) +
+                fieldToWeights.get("pacManDistanceToInky") * shortestPathDistanceToGhost(game, Constants.GHOST.INKY) +
+                fieldToWeights.get("pacManDistanceToPinky") * shortestPathDistanceToGhost(game, Constants.GHOST.PINKY) +
+                fieldToWeights.get("pacManDistanceToSue") * shortestPathDistanceToGhost(game, Constants.GHOST.SUE) +
                 //fieldToWeights.get("pacManDistanceToNearestGhostIfNotEdible") * distanceToNearestGhostIfNotEdible +
                 fieldToWeights.get("pacManNearestGhostEdible") * boolToNum(game.isGhostEdible(nearestGhost)) +
                 fieldToWeights.get("pacManDistanceToNearestGhostUnder20") * ((distanceToNearestGhost < 20 && !isNearestGhostEdible) ? distanceToNearestGhost : 0) +

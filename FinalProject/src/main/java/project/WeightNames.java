@@ -21,10 +21,10 @@ public class WeightNames
         names.add("numActivePills");
         names.add("numActivePowerPills");
         names.add("score");
-        //names.add("pacManDistanceToBlinky");
-        //names.add("pacManDistanceToInky");
-        //names.add("pacManDistanceToPinky");
-        //names.add("pacManDistanceToSue");
+        names.add("pacManDistanceToBlinky");
+        names.add("pacManDistanceToInky");
+        names.add("pacManDistanceToPinky");
+        names.add("pacManDistanceToSue");
         //names.add("pacManDistanceToNearestGhostIfNotEdible");
         names.add("pacManNearestGhostEdible");
         names.add("pacManDistanceToNearestGhostUnder20");

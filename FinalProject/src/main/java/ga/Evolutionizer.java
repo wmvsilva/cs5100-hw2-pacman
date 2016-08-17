@@ -6,23 +6,27 @@ import pacman.Executor;
 import pacman.controllers.examples.po.POCommGhosts;
 import project.SettableHeuristic;
 
+import java.io.IOException;
+
 /**
  * Created by William on 8/15/2016.
  */
 public class Evolutionizer
 {
-    public static void main(String[] args)
+    public static void main(String[] args) throws IOException
     {
+        System.in.read();
+        System.out.println("Begin");
         // Set a candidate solution
         // FitnessCalc.setSolution("1111000000000000000000000000000000000000000000000000000000001111");
 
         // Create an initial population
-        Population myPacManPop = new Population(10, true, true);
-        Population myGhostPop = new Population(10, true, false);
+        Population myPacManPop = new Population(32, true, true);
+        Population myGhostPop = new Population(32, true, false);
 
         // Evolve our population until we reach an optimum solution
         int generationCount = 0;
-        while (generationCount < 5) {// (myPop.getFittest().getFitness() < FitnessCalc.getMaxFitness()) {
+        while (generationCount < 10) {// (myPop.getFittest().getFitness() < FitnessCalc.getMaxFitness()) {
             generationCount++;
             // Evolve PacMen
             System.out.println("PacMan- Generation: " + generationCount + " Fittest: " + myPacManPop.getFittest(myGhostPop).getFitness(myGhostPop));
@@ -38,6 +42,8 @@ public class Evolutionizer
         System.out.println("Genes:");
         System.out.println(myGhostPop.getFittest(myPacManPop));
 
+        System.out.println("Press enter to run game");
+        System.in.read();
         Executor executor = new Executor(false, true);
         executor.runGameTimed(
                 new MyPacManMiniMax(new SettableHeuristic(myPacManPop.getFittest(myGhostPop).getGeneMap())),
