@@ -28,15 +28,15 @@ public class Evolutionizer
         // FitnessCalc.setSolution("1111000000000000000000000000000000000000000000000000000000001111");
 
         // Create an initial population
-        Population myPacManPop = new Population(5, true, true);
-        Population myGhostPop = new Population(5, true, false);
+        Population myPacManPop = new Population(50, true, true);
+        Population myGhostPop = new Population(50, true, false);
 
         // Evolve our population until we reach an optimum solution
         int generationCount = 0;
         List<Individual> fittestPacMenFromEachGeneration = new ArrayList<>();
         List<Individual> fittestGhostsFromEachGeneration = new ArrayList<>();
 
-        while (generationCount < 3) {// (myPop.getFittest().getFitness() < FitnessCalc.getMaxFitness()) {
+        while (generationCount < 50) {// (myPop.getFittest().getFitness() < FitnessCalc.getMaxFitness()) {
             generationCount++;
             // Evolve PacMen
             Individual fittestPacMan = myPacManPop.getFittest(myGhostPop);
