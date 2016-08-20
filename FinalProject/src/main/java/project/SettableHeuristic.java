@@ -5,14 +5,17 @@ import com.google.common.primitives.Ints;
 import pacman.game.Constants;
 import pacman.game.Game;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.Math.abs;
 
-/**
- * Created by William on 8/15/2016.
- */
 public class SettableHeuristic implements Heuristic
 {
     private Map<String, Integer> fieldToWeights;

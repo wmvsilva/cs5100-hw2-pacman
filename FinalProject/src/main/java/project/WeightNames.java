@@ -1,16 +1,10 @@
 package project;
 
-import ga.Individual;
-import pacman.game.Constants;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by William on 8/15/2016.
- */
 public class WeightNames
 {
     public static List<String> getNames()

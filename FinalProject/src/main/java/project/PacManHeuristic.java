@@ -7,9 +7,6 @@ import pacman.game.Game;
 
 import java.util.*;
 
-/**
- * Created by William on 8/15/2016.
- */
 public class PacManHeuristic implements Heuristic
 {
     public int heuristicVal(Game game, Queue<Constants.MOVE> ignored)

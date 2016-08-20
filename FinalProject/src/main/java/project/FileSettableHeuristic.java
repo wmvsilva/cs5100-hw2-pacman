@@ -8,13 +8,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 
-import static java.nio.file.Files.readAllLines;
-
-/**
- * Created by William on 8/16/2016.
- */
 public class FileSettableHeuristic implements Heuristic
 {
     private SettableHeuristic settableHeuristic;

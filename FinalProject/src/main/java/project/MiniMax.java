@@ -44,9 +44,9 @@ public class MiniMax
      * @return a state-space search tree in which the leaves have been assigned values based on a heuristic. High
      * values represent PacMan winning while low values represent the ghosts winning.
      */
-    public MoveNumber createMiniMaxTreeAndGetBestMoveHelper(Game game, int depth, boolean isPacMan,
-                                                      Optional<Integer> alpha, Optional<Integer> beta,
-                                                            Queue<MOVE> moveHistoryCopy)
+    private MoveNumber createMiniMaxTreeAndGetBestMoveHelper(Game game, int depth, boolean isPacMan,
+                                                             Optional<Integer> alpha, Optional<Integer> beta,
+                                                             Queue<MOVE> moveHistoryCopy)
     {
         Optional<Integer> newAlpha = alpha;
         Optional<Integer> newBeta = beta;
@@ -196,7 +196,7 @@ public class MiniMax
      * @param ghost one of the four ghosts
      * @return set of all possible moves that the given ghost can perform in the given game state
      */
-    public static Set<MOVE> getPossibleGhostMoves(Game game, GHOST ghost)
+    static Set<MOVE> getPossibleGhostMoves(Game game, GHOST ghost)
     {
         Set<MOVE> result = Sets.newHashSet(game.getPossibleMoves(game.getGhostCurrentNodeIndex(ghost),
                 game.getGhostLastMoveMade(ghost)));
@@ -221,7 +221,7 @@ public class MiniMax
         /**
          * Heuristic value
          */
-        public int hValue;
+        int hValue;
 
         MoveNumber(@Nullable MOVE move, int hValue)
         {
@@ -234,7 +234,7 @@ public class MiniMax
             this.move = checkNotNull(move);
         }
 
-        public void setGhostMoves(Map<GHOST, MOVE> ghostMoves)
+        void setGhostMoves(Map<GHOST, MOVE> ghostMoves)
         {
             this.ghostMoves = checkNotNull(ghostMoves);
         }
