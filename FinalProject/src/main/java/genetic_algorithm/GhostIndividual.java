@@ -13,6 +13,6 @@ public class GhostIndividual extends Individual
     {
         int randomIndex = ThreadLocalRandom.current().nextInt(0, population.size());
         Map<String, Integer> randomPacManGenes = population.getIndividual(randomIndex).getGeneMap();
-        return FitnessCalc.getGhostFitness(this, randomPacManGenes);
+        return FitnessCalculator.getGhostFitness(this, randomPacManGenes);
     }
 }
