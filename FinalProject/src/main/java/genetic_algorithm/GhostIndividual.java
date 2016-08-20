@@ -4,15 +4,21 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Created by William on 8/15/2016.
+ * An individual of a population that represents a Ghost controller.
  */
-public class GhostIndividual extends Individual
+class GhostIndividual extends Individual
 {
+    /**
+     * @param opposingPopulation population of PacMan
+     * @return retrieves a random Pac-Man from the opposing population and runs a game against it with no graphics
+     * and at the fastest speed. The negative score of that game is the fitness of this ghost
+     */
     @Override
-    public int getPersonalFitness(Population population)
+    public int getPersonalFitness(Population opposingPopulation)
     {
-        int randomIndex = ThreadLocalRandom.current().nextInt(0, population.size());
-        Map<String, Integer> randomPacManGenes = population.getIndividual(randomIndex).getGeneMap();
+        int randomIndex = ThreadLocalRandom.current().nextInt(0, opposingPopulation.size());
+        Map<String, Integer> randomPacManGenes = opposingPopulation.getIndividual(randomIndex).getGeneMap();
+
         return FitnessCalculator.getGhostFitness(this, randomPacManGenes);
     }
 }

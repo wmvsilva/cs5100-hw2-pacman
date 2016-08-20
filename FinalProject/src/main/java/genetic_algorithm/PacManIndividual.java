@@ -4,15 +4,21 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Created by William on 8/15/2016.
+ * Represents a Pac-Man individual in a population which has genes and evolves based on the fitness score found in
+ * this class's method
  */
-public class PacManIndividual extends Individual
+class PacManIndividual extends Individual
 {
+    /**
+     * @param opposingPopulation enemy population to select a random individual of to test against
+     * @return the fitness (score) of this Pac-Man testing it against a random individual from the given ghost pop
+     */
     @Override
-    public int getPersonalFitness(Population population)
+    public int getPersonalFitness(Population opposingPopulation)
     {
-        int randomIndex = ThreadLocalRandom.current().nextInt(0, population.size());
-        Map<String, Integer> randomGhostGenes = population.getIndividual(randomIndex).getGeneMap();
+        int randomIndex = ThreadLocalRandom.current().nextInt(0, opposingPopulation.size());
+        Map<String, Integer> randomGhostGenes = opposingPopulation.getIndividual(randomIndex).getGeneMap();
+
         return FitnessCalculator.getPacManFitness(this, randomGhostGenes);
     }
 }
