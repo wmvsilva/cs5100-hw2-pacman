@@ -11,9 +11,6 @@ import java.util.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * Created by William on 8/15/2016.
- */
 public class MiniMax
 {
     private Queue<MOVE> moveHistory;

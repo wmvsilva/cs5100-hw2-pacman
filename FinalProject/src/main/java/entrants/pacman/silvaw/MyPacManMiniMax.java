@@ -1,22 +1,18 @@
 package entrants.pacman.silvaw;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Multiset;
-import com.google.common.collect.Sets;
-import com.google.common.primitives.Ints;
-import com.sun.istack.internal.Nullable;
 import pacman.controllers.PacmanController;
-import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 import project.Heuristic;
 import project.MiniMax;
 
-import java.util.*;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A controller for pacman which uses Minimax to pick a move at every step. The evaluation function for the Minimax
+ * algorithm is set in the constructor of this class.
+ */
 public class MyPacManMiniMax extends PacmanController
 {
     /**
@@ -24,10 +20,17 @@ public class MyPacManMiniMax extends PacmanController
      */
     private static final int MINIMAX_DEPTH = 6;
 
+    /**
+     * Minimax implementation to pick next move
+     */
     private MiniMax miniMax;
 
+    /**
+     * @param heuristic evaluation function to use in Minimax algorithm when picking move
+     */
     public MyPacManMiniMax(Heuristic heuristic)
     {
+        checkNotNull(heuristic);
         this.miniMax = new MiniMax(heuristic);
     }
 
