@@ -4,8 +4,8 @@ import com.google.common.base.Optional;
 import pacman.controllers.PacmanController;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
-import project.Heuristic;
-import project.MiniMax;
+import minimax.Heuristic;
+import minimax.MiniMax;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

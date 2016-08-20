@@ -1,4 +1,4 @@
-package ga;
+package genetic_algorithm;
 
 /**
  * Created by William on 8/15/2016.

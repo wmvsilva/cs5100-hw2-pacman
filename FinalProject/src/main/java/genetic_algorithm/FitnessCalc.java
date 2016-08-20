@@ -1,11 +1,9 @@
-package ga;
+package genetic_algorithm;
 
 import entrants.ghosts.silvaw.MyGhostsMiniMax;
 import entrants.pacman.silvaw.MyPacManMiniMax;
 import pacman.Executor;
-import pacman.controllers.examples.po.POCommGhosts;
-import project.PacManHeuristic;
-import project.SettableHeuristic;
+import minimax.SettableHeuristic;
 
 import java.util.Map;
 

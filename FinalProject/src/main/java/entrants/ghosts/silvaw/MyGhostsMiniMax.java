@@ -5,8 +5,8 @@ import pacman.controllers.Controller;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
-import project.Heuristic;
-import project.MiniMax;
+import minimax.Heuristic;
+import minimax.MiniMax;
 
 import java.util.EnumMap;
 import java.util.Map;

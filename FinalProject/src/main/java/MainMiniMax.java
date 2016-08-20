@@ -1,11 +1,7 @@
-import entrants.ghosts.silvaw.MyGhostsMiniMax;
 import entrants.pacman.silvaw.MyPacManMiniMax;
 import examples.commGhosts.POCommGhosts;
 import pacman.Executor;
-import pacman.controllers.examples.RandomGhosts;
-import project.FileSettableHeuristic;
-import project.PacManHeuristic;
-import project.SettableHeuristic;
+import minimax.FileSettableHeuristic;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package ga;
+package genetic_algorithm;
 
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;

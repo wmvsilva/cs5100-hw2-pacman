@@ -1,9 +1,9 @@
-package ga;
+package genetic_algorithm;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import static ga.Individual.MAX_WEIGHT;
-import static ga.Individual.MIN_WEIGHT;
+import static genetic_algorithm.Individual.MAX_WEIGHT;
+import static genetic_algorithm.Individual.MIN_WEIGHT;
 
 /**
  * Created by William on 8/15/2016.

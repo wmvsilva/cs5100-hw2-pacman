@@ -1,4 +1,4 @@
-package project;
+package minimax;
 
 import java.util.ArrayList;
 import java.util.HashMap;

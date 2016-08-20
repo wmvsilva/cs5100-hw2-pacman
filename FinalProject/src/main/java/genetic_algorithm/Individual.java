@@ -1,8 +1,7 @@
-package ga;
+package genetic_algorithm;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Optional;
-import project.WeightNames;
+import minimax.WeightNames;
 
 import java.util.ArrayList;
 import java.util.HashMap;

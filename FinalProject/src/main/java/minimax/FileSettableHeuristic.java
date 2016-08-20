@@ -1,4 +1,4 @@
-package project;
+package minimax;
 
 import pacman.game.Constants;
 import pacman.game.Game;
