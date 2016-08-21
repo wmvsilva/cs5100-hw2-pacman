@@ -5,7 +5,7 @@ import pacman.controllers.PacmanController;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 import minimax.Heuristic;
-import minimax.MiniMax;
+import minimax.MinimaxAlgorithm;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -16,14 +16,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class MyPacManMiniMax extends PacmanController
 {
     /**
-     * The depth of the MiniMax tree to create
+     * The depth of the MinimaxAlgorithm tree to create
      */
     private static final int MINIMAX_DEPTH = 6;
 
     /**
      * Minimax implementation to pick next move
      */
-    private MiniMax miniMax;
+    private MinimaxAlgorithm minimaxAlgorithm;
 
     /**
      * @param heuristic evaluation function to use in Minimax algorithm when picking move
@@ -31,7 +31,7 @@ public class MyPacManMiniMax extends PacmanController
     public MyPacManMiniMax(Heuristic heuristic)
     {
         checkNotNull(heuristic);
-        this.miniMax = new MiniMax(heuristic);
+        this.minimaxAlgorithm = new MinimaxAlgorithm(heuristic);
     }
 
     /**
@@ -41,7 +41,7 @@ public class MyPacManMiniMax extends PacmanController
      */
     public MOVE getMove(Game game, long timeDue)
     {
-        return miniMax.createMiniMaxTreeAndGetBestMove(game, MINIMAX_DEPTH, true,
+        return minimaxAlgorithm.createMiniMaxTreeAndGetBestMove(game, MINIMAX_DEPTH, true,
                 Optional.<Integer>absent(), Optional.<Integer>absent()).move;
     }
 }

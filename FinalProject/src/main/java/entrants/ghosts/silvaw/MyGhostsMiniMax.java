@@ -6,7 +6,7 @@ import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 import minimax.Heuristic;
-import minimax.MiniMax;
+import minimax.MinimaxAlgorithm;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -27,7 +27,7 @@ public class MyGhostsMiniMax extends Controller<EnumMap<GHOST, MOVE>>
     /**
      * Minimax implementation to pick next move
      */
-    private MiniMax miniMax;
+    private MinimaxAlgorithm minimaxAlgorithm;
 
     /**
      * @param heuristic evaluation function to use in Minimax algorithm when picking move
@@ -35,7 +35,7 @@ public class MyGhostsMiniMax extends Controller<EnumMap<GHOST, MOVE>>
     public MyGhostsMiniMax(Heuristic heuristic)
     {
         checkNotNull(heuristic);
-        this.miniMax = new MiniMax(heuristic);
+        this.minimaxAlgorithm = new MinimaxAlgorithm(heuristic);
     }
 
     /**
@@ -46,7 +46,7 @@ public class MyGhostsMiniMax extends Controller<EnumMap<GHOST, MOVE>>
     @Override
     public EnumMap<GHOST, MOVE> getMove(Game game, long timeDue)
     {
-        MiniMax.MoveNumber moveNumber = miniMax.createMiniMaxTreeAndGetBestMove(game, MINIMAX_DEPTH, false,
+        MinimaxAlgorithm.MoveNumber moveNumber = minimaxAlgorithm.createMiniMaxTreeAndGetBestMove(game, MINIMAX_DEPTH, false,
                 Optional.<Integer>absent(), Optional.<Integer>absent());
         Map<GHOST, MOVE> ghostMoves = moveNumber.ghostMoves;
 

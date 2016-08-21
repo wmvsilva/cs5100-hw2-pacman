@@ -1,27 +1,57 @@
 package minimax;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.sun.istack.internal.Nullable;
 import pacman.game.Constants.MOVE;
 import pacman.game.Constants.GHOST;
 import pacman.game.Game;
 
-import java.util.*;
+
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class MiniMax
+/**
+ * Implementation of the Minimax algorithm which evaluates which moves are best in Ms. Pac-Man for either the ghosts
+ * or Ms. Pac-Man.
+ */
+public class MinimaxAlgorithm
 {
+    /**
+     * History of moves returned by createMiniMaxTreeAndGetBestMove
+     */
     private Queue<MOVE> moveHistory;
+    /**
+     * The evaluation function used to determine how 'good' the current state of the game is for a player
+     */
     private Heuristic heuristicFunction;
 
-    public MiniMax(Heuristic heuristic)
+    /**
+     * @param heuristic evaluation function to analyze game state
+     */
+    public MinimaxAlgorithm(Heuristic heuristic)
     {
         this.heuristicFunction = checkNotNull(heuristic);
-        this.moveHistory = new LinkedList<>();
+        this.moveHistory = Lists.newLinkedList();
     }
 
+    /**
+     * @param game state of a Pac-Man game
+     * @param depth the depth of the Minimax tree to create
+     * @param isPacMan is the best move for Pac-Man (or the ghosts) to be returned?
+     * @param alpha the alpha value for alpha-beta pruning
+     * @param beta the beta value for alpha-beta pruning
+     * @return the best move for either Pac-Man or the ghosts in the given game
+     */
     public MoveNumber createMiniMaxTreeAndGetBestMove(Game game, int depth, boolean isPacMan,
                                                       Optional<Integer> alpha, Optional<Integer> beta)
     {
@@ -41,6 +71,8 @@ public class MiniMax
      * @param game copy of the current game
      * @param depth the depth of the tree to create
      * @param isPacMan are the next branches to create for PacMan? (Else, the ghosts)
+     * @param alpha the alpha value for alpha-beta pruning
+     * @param beta the beta value for alpha-beta pruning
      * @return a state-space search tree in which the leaves have been assigned values based on a heuristic. High
      * values represent PacMan winning while low values represent the ghosts winning.
      */
@@ -150,14 +182,14 @@ public class MiniMax
                                                                                  Set<MOVE> possiblePinkyMoves,
                                                                                  Set<MOVE> possibleSueMoves)
     {
-        Set<Map<GHOST, MOVE>> result = new HashSet<>();
+        Set<Map<GHOST, MOVE>> result = Sets.newHashSet();
 
         for (MOVE blinkyMove : possibleBlinkyMoves) {
             for (MOVE inkyMove : possibleInkyMoves) {
                 for (MOVE pinkyMove : possiblePinkyMoves) {
                     for (MOVE sueMove : possibleSueMoves) {
 
-                        Map<GHOST, MOVE> possibleMoveSet = new HashMap<>();
+                        Map<GHOST, MOVE> possibleMoveSet = Maps.newHashMap();
                         possibleMoveSet.put(GHOST.BLINKY, blinkyMove);
                         possibleMoveSet.put(GHOST.INKY, inkyMove);
                         possibleMoveSet.put(GHOST.PINKY, pinkyMove);
@@ -217,6 +249,9 @@ public class MiniMax
          * A move for PacMan to use
          */
         public MOVE move;
+        /**
+         * Moves for the ghosts to use
+         */
         public Map<GHOST, MOVE> ghostMoves;
         /**
          * Heuristic value

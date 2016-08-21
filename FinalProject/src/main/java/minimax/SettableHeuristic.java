@@ -2,7 +2,8 @@ package minimax;
 
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
-import pacman.game.Constants;
+import pacman.game.Constants.GHOST;
+import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
 import java.util.ArrayList;
@@ -15,46 +16,59 @@ import java.util.Queue;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static pacman.game.Constants.GHOST.BLINKY;
+import static pacman.game.Constants.GHOST.INKY;
+import static pacman.game.Constants.GHOST.PINKY;
+import static pacman.game.Constants.GHOST.SUE;
+import static pacman.game.Constants.MOVE.DOWN;
+import static pacman.game.Constants.MOVE.LEFT;
+import static pacman.game.Constants.MOVE.UP;
 
+/**
+ * Evaluation function to evaluate the state of the game. It takes in feature weights for all of its features.
+ */
 public class SettableHeuristic implements Heuristic
 {
+    /**
+     * Map of feature names to the feature weights for that feature
+     */
     private Map<String, Integer> fieldToWeights;
-    private static final Map<Constants.MOVE, Constants.MOVE> moveToOppositeMoves = moveToOppositeMovesMap();
+    private static final Map<MOVE, MOVE> moveToOppositeMoves = moveToOppositeMovesMap();
 
     public SettableHeuristic(Map<String, Integer> fieldToWeights)
     {
         this.fieldToWeights = checkNotNull(fieldToWeights);
     }
 
-    private static Map<Constants.MOVE, Constants.MOVE> moveToOppositeMovesMap()
+    private static Map<MOVE, MOVE> moveToOppositeMovesMap()
     {
-        Map<Constants.MOVE, Constants.MOVE> moveOppositeMoveMap = new HashMap<>();
-        moveOppositeMoveMap.put(Constants.MOVE.DOWN, Constants.MOVE.UP);
-        moveOppositeMoveMap.put(Constants.MOVE.UP, Constants.MOVE.DOWN);
-        moveOppositeMoveMap.put(Constants.MOVE.RIGHT, Constants.MOVE.LEFT);
-        moveOppositeMoveMap.put(Constants.MOVE.LEFT, Constants.MOVE.RIGHT);
+        Map<MOVE, MOVE> moveOppositeMoveMap = new HashMap<>();
+        moveOppositeMoveMap.put(DOWN, UP);
+        moveOppositeMoveMap.put(UP, MOVE.DOWN);
+        moveOppositeMoveMap.put(MOVE.RIGHT, MOVE.LEFT);
+        moveOppositeMoveMap.put(MOVE.LEFT, MOVE.RIGHT);
         return moveOppositeMoveMap;
     }
 
     @Override
-    public int heuristicVal(Game game, Queue<Constants.MOVE> moveHistory)
+    public int heuristicVal(Game game, Queue<MOVE> pacManMoveHistory)
     {
         // Determine distance to nearest ghost
-        int distanceToBlinky = shortestPathDistanceToGhost(game, Constants.GHOST.BLINKY);
-        int distanceToInky = shortestPathDistanceToGhost(game, Constants.GHOST.INKY);
-        int distanceToPinky = shortestPathDistanceToGhost(game, Constants.GHOST.PINKY);
-        int distanceToSue = shortestPathDistanceToGhost(game, Constants.GHOST.SUE);
-        Map<Constants.GHOST, Integer> ghostsToDistance = new HashMap<>();
-        ghostsToDistance.put(Constants.GHOST.BLINKY, distanceToBlinky);
-        ghostsToDistance.put(Constants.GHOST.INKY, distanceToInky);
-        ghostsToDistance.put(Constants.GHOST.PINKY, distanceToPinky);
-        ghostsToDistance.put(Constants.GHOST.SUE, distanceToSue);
+        int distanceToBlinky = shortestPathDistanceToGhost(game, BLINKY);
+        int distanceToInky = shortestPathDistanceToGhost(game, INKY);
+        int distanceToPinky = shortestPathDistanceToGhost(game, PINKY);
+        int distanceToSue = shortestPathDistanceToGhost(game, SUE);
+        Map<GHOST, Integer> ghostsToDistance = new HashMap<>();
+        ghostsToDistance.put(BLINKY, distanceToBlinky);
+        ghostsToDistance.put(INKY, distanceToInky);
+        ghostsToDistance.put(PINKY, distanceToPinky);
+        ghostsToDistance.put(SUE, distanceToSue);
 
         int distanceToNearestGhost = Collections.min(Lists.newArrayList(distanceToBlinky, distanceToInky,
                 distanceToPinky, distanceToSue));
-        Constants.GHOST nearestGhost = null;
+        GHOST nearestGhost = null;
         // Determine the nearest ghost
-        for (Map.Entry<Constants.GHOST, Integer> ghostDistance : ghostsToDistance.entrySet()) {
+        for (Map.Entry<GHOST, Integer> ghostDistance : ghostsToDistance.entrySet()) {
             if (ghostDistance.getValue() == distanceToNearestGhost) {
                 nearestGhost = ghostDistance.getKey();
             }
@@ -79,30 +93,30 @@ public class SettableHeuristic implements Heuristic
             distanceToNearestPill = Collections.min(distancesToPills);
         }
 
-        Set<Constants.MOVE> possibleBlinkyMoves = MiniMax.getPossibleGhostMoves(game, Constants.GHOST.BLINKY);
-        Set<Constants.MOVE> possibleInkyMoves = MiniMax.getPossibleGhostMoves(game, Constants.GHOST.INKY);
-        Set<Constants.MOVE> possiblePinkyMoves = MiniMax.getPossibleGhostMoves(game, Constants.GHOST.PINKY);
-        Set<Constants.MOVE> possibleSueMoves = MiniMax.getPossibleGhostMoves(game, Constants.GHOST.SUE);
+        Set<MOVE> possibleBlinkyMoves = MinimaxAlgorithm.getPossibleGhostMoves(game, BLINKY);
+        Set<MOVE> possibleInkyMoves = MinimaxAlgorithm.getPossibleGhostMoves(game, INKY);
+        Set<MOVE> possiblePinkyMoves = MinimaxAlgorithm.getPossibleGhostMoves(game, PINKY);
+        Set<MOVE> possibleSueMoves = MinimaxAlgorithm.getPossibleGhostMoves(game, SUE);
 
         int distanceToNextNearestPillMOreThan10IfPillJustEaten = 0;
         if (game.wasPillEaten() || distanceToNearestPill > 10) {
             distanceToNextNearestPillMOreThan10IfPillJustEaten = distanceToNearestPill;
         }
 
-        Set<Constants.MOVE> moveHistorySet = new HashSet<>(moveHistory);
+        Set<MOVE> moveHistorySet = new HashSet<>(pacManMoveHistory);
         int unvariedMoves = 0;
         if (moveHistorySet.size() == 2) {
-            Constants.MOVE move = moveHistorySet.iterator().next();
-            int occurrences = Collections.frequency(moveHistory, move);
-            double percentage = (double) occurrences / (double) moveHistory.size();
+            MOVE move = moveHistorySet.iterator().next();
+            int occurrences = Collections.frequency(pacManMoveHistory, move);
+            double percentage = (double) occurrences / (double) pacManMoveHistory.size();
             unvariedMoves = (int) (Math.abs(0.5 - percentage) * 100);
         }
 
         boolean reversedMove = false;
-        if (moveHistory.size() >= 2) {
-            List<Constants.MOVE> moveList = new ArrayList<>(moveHistory);
-            Constants.MOVE lastMove = moveList.get(moveHistory.size() - 1);
-            Constants.MOVE secondToLastMove = moveList.get(moveHistory.size() - 2);
+        if (pacManMoveHistory.size() >= 2) {
+            List<MOVE> moveList = new ArrayList<>(pacManMoveHistory);
+            MOVE lastMove = moveList.get(pacManMoveHistory.size() - 1);
+            MOVE secondToLastMove = moveList.get(pacManMoveHistory.size() - 2);
             if (moveToOppositeMoves.get(lastMove) == secondToLastMove) {
                 reversedMove = true;
             }
@@ -112,10 +126,10 @@ public class SettableHeuristic implements Heuristic
                 fieldToWeights.get("numActivePills") * game.getNumberOfActivePills() +
                 fieldToWeights.get("numActivePowerPills") * game.getNumberOfActivePowerPills() +
                 fieldToWeights.get("score") * game.getScore() +
-                fieldToWeights.get("pacManDistanceToUnedibleBlinky") * (!game.isGhostEdible(Constants.GHOST.BLINKY) ? shortestPathDistanceToGhost(game, Constants.GHOST.BLINKY) : 0) +
-                fieldToWeights.get("pacManDistanceToUnedibleInky") * (!game.isGhostEdible(Constants.GHOST.INKY) ? shortestPathDistanceToGhost(game, Constants.GHOST.INKY) : 0)  +
-                fieldToWeights.get("pacManDistanceToUnediblePinky") * (!game.isGhostEdible(Constants.GHOST.PINKY) ? shortestPathDistanceToGhost(game, Constants.GHOST.PINKY) : 0) +
-                fieldToWeights.get("pacManDistanceToUnedibleSue") * (!game.isGhostEdible(Constants.GHOST.SUE) ? shortestPathDistanceToGhost(game, Constants.GHOST.SUE) : 0) +
+                fieldToWeights.get("pacManDistanceToUnedibleBlinky") * (!game.isGhostEdible(BLINKY) ? shortestPathDistanceToGhost(game, BLINKY) : 0) +
+                fieldToWeights.get("pacManDistanceToUnedibleInky") * (!game.isGhostEdible(INKY) ? shortestPathDistanceToGhost(game, INKY) : 0)  +
+                fieldToWeights.get("pacManDistanceToUnediblePinky") * (!game.isGhostEdible(PINKY) ? shortestPathDistanceToGhost(game, PINKY) : 0) +
+                fieldToWeights.get("pacManDistanceToUnedibleSue") * (!game.isGhostEdible(SUE) ? shortestPathDistanceToGhost(game, SUE) : 0) +
                 //fieldToWeights.get("pacManDistanceToNearestGhostIfNotEdible") * distanceToNearestGhostIfNotEdible +
                 fieldToWeights.get("pacManNearestGhostEdible") * boolToNum(game.isGhostEdible(nearestGhost)) +
                 fieldToWeights.get("pacManDistanceToNearestGhostUnder20") * ((distanceToNearestGhost < 20 && !isNearestGhostEdible) ? distanceToNearestGhost : 0) +
@@ -140,8 +154,8 @@ public class SettableHeuristic implements Heuristic
                 fieldToWeights.get("distanceToNextNearestPillMOreThan10IfPillJustEaten") * distanceToNextNearestPillMOreThan10IfPillJustEaten +
                 fieldToWeights.get("distanceToNearestPillAboveFive") * boolToNum(distanceToNearestPill >= 5) +
 
-                fieldToWeights.get("pacManLastMoveLeft") * boolToNum(game.getPacmanLastMoveMade() == Constants.MOVE.LEFT) +
-                fieldToWeights.get("pacManLastMoveDown") * boolToNum(game.getPacmanLastMoveMade() == Constants.MOVE.DOWN) +
+                fieldToWeights.get("pacManLastMoveLeft") * boolToNum(game.getPacmanLastMoveMade() == LEFT) +
+                fieldToWeights.get("pacManLastMoveDown") * boolToNum(game.getPacmanLastMoveMade() == DOWN) +
 
                 fieldToWeights.get("pacManDistanceToNearestGhostIfUnder10") * ((distanceToNearestGhost < 10 && !isNearestGhostEdible) ? distanceToNearestGhost : 0) +
                 fieldToWeights.get("pacManDistanceToNearestGhostIfUnder5") * ((distanceToNearestGhost < 5 && !isNearestGhostEdible) ? distanceToNearestGhost : 0) +
@@ -167,7 +181,7 @@ public class SettableHeuristic implements Heuristic
      * @param ghost one of the four ghosts
      * @return the shortest distance from PacMan to the given ghost
      */
-    private static int shortestPathDistanceToGhost(Game game, Constants.GHOST ghost)
+    private static int shortestPathDistanceToGhost(Game game, GHOST ghost)
     {
         return game.getShortestPathDistance(game.getPacmanCurrentNodeIndex(), game.getGhostCurrentNodeIndex(ghost));
     }
