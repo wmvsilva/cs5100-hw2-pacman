@@ -33,13 +33,22 @@ public class SettableHeuristic implements Heuristic
      * Map of feature names to the feature weights for that feature
      */
     private Map<String, Integer> fieldToWeights;
-    private static final Map<MOVE, MOVE> moveToOppositeMoves = moveToOppositeMovesMap();
+    /**
+     * Map of possible moves to the moves in the opposite direction
+     */
+    private static final Map<MOVE, MOVE> MOVE_TO_OPPOSITE_MOVE = moveToOppositeMovesMap();
 
+    /**
+     * @param fieldToWeights feature weights to use in this evaluation function
+     */
     public SettableHeuristic(Map<String, Integer> fieldToWeights)
     {
         this.fieldToWeights = checkNotNull(fieldToWeights);
     }
 
+    /**
+     * @return map of moves in Pac-Man to the move in the opposite direction
+     */
     private static Map<MOVE, MOVE> moveToOppositeMovesMap()
     {
         Map<MOVE, MOVE> moveOppositeMoveMap = new HashMap<>();
@@ -117,7 +126,7 @@ public class SettableHeuristic implements Heuristic
             List<MOVE> moveList = new ArrayList<>(pacManMoveHistory);
             MOVE lastMove = moveList.get(pacManMoveHistory.size() - 1);
             MOVE secondToLastMove = moveList.get(pacManMoveHistory.size() - 2);
-            if (moveToOppositeMoves.get(lastMove) == secondToLastMove) {
+            if (MOVE_TO_OPPOSITE_MOVE.get(lastMove) == secondToLastMove) {
                 reversedMove = true;
             }
         }
@@ -167,6 +176,10 @@ public class SettableHeuristic implements Heuristic
                 fieldToWeights.get("pacManDistanceToNearestGhostEdibleIfUnder5") * ((distanceToNearestGhost < 5 && isNearestGhostEdible) ? distanceToNearestGhost : 0);
     }
 
+    /**
+     * @param bool some boolean value
+     * @return 1 if bool is true, 0 if bool is false
+     */
     private static int boolToNum(boolean bool)
     {
         if (bool) {

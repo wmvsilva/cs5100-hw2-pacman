@@ -3,9 +3,8 @@ package genetic_algorithm;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import minimax.WeightNames;
+import minimax.FeatureWeightNames;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -45,7 +44,7 @@ abstract class Individual
     private static List<Pair> generateEmptyGenes()
     {
         List<Pair> emptyGenes = Lists.newArrayList();
-        for (String geneName : WeightNames.getNames()) {
+        for (String geneName : FeatureWeightNames.getNames()) {
             emptyGenes.add(new Pair(geneName, 0));
         }
         return emptyGenes;
@@ -58,7 +57,7 @@ abstract class Individual
     {
         // Clear the existing genes first
         genes.clear();
-        for (String geneName : WeightNames.getNames()) {
+        for (String geneName : FeatureWeightNames.getNames()) {
             genes.add(new Pair(geneName, ThreadLocalRandom.current().nextInt(MIN_WEIGHT, MAX_WEIGHT + 1)));
         }
     }

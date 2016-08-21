@@ -1,15 +1,22 @@
 package minimax;
 
-import java.util.ArrayList;
+import com.google.common.collect.Lists;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class WeightNames
+/**
+ * Contains a list of all the feature weight names used with {@link SettableHeuristic}
+ */
+public class FeatureWeightNames
 {
+    /**
+     * @return list of the names of all of the features in {@link SettableHeuristic}
+     */
     public static List<String> getNames()
     {
-        List<String> names = new ArrayList<>();
+        List<String> names = Lists.newArrayList();
 
         names.add("pacManEaten");
         names.add("numActivePills");
@@ -58,6 +65,9 @@ public class WeightNames
         return names;
     }
 
+    /**
+     * @return a map of feature names to feature weights with all feature weights being 0
+     */
     public static Map<String, Integer> generateZeroWeights()
     {
         Map<String, Integer> zeroWeightMap = new HashMap<>();

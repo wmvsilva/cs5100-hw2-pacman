@@ -2,7 +2,7 @@ package genetic_algorithm;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
-import minimax.WeightNames;
+import minimax.FeatureWeightNames;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -11,7 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +82,7 @@ public class Evolutionizer
     private static void saveFile(String namePrefix, List<Individual> individuals)
     {
         // Get the names of all genes
-        List<String> headerNames = WeightNames.getNames();
+        List<String> headerNames = FeatureWeightNames.getNames();
 
         String headerLine = "";
         for (String column : headerNames) {

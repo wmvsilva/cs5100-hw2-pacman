@@ -5,15 +5,16 @@ import minimax.FileSettableHeuristic;
 
 import java.io.IOException;
 
-
 /**
- * Created by pwillic on 06/05/2016.
+ * Runs a visible Ms. Pac-Man game with some pre-set settings
  */
 public class MainMiniMax
 {
-    public static void main(String[] args) throws IOException
+    /**
+     * @param args ignored arguments
+     */
+    public static void main(String[] args)
     {
-
         Executor executor = new Executor(false, true);
         executor.runGameTimed(new MyPacManMiniMax(new FileSettableHeuristic("pacman_2016-32-16_11-32-14.csv", 1)),
                 new POCommGhosts(50), true);
