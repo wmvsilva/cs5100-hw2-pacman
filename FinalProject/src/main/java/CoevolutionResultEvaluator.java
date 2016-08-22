@@ -29,23 +29,8 @@ public class CoevolutionResultEvaluator
         String pacManFile = "pacman_2016-44-22_11-44-17.csv";
         String ghostFile = "ghosts_2016-44-22_11-44-17.csv";
 
-        // Read file
-        Path pacManFilePath = Paths.get(pacManFile);
-        List<String> pacManFileLines = null;
-        try {
-            pacManFileLines = Files.readAllLines(pacManFilePath, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            Throwables.propagate(e);
-        }
-
-        // Read file
-        Path ghostFilePath = Paths.get(ghostFile);
-        List<String> ghostFileLines = null;
-        try {
-            ghostFileLines = Files.readAllLines(ghostFilePath, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            Throwables.propagate(e);
-        }
+        List<String> pacManFileLines = readFile(pacManFile);
+        List<String> ghostFileLines = readFile(ghostFile);
 
         String header = pacManFileLines.get(0);
         List<String> columns = Arrays.asList(header.split(","));
@@ -77,6 +62,18 @@ public class CoevolutionResultEvaluator
         } catch (IOException e) {
             Throwables.propagate(e);
         }
+    }
+
+    private static List<String> readFile(String filename)
+    {
+        Path filePath = Paths.get(filename);
+        List<String> fileLines = null;
+        try {
+            fileLines = Files.readAllLines(filePath, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            Throwables.propagate(e);
+        }
+        return fileLines;
     }
 
     static double determineAverageScore(Controller<Constants.MOVE> pacManController,
