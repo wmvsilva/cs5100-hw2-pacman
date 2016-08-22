@@ -1,7 +1,8 @@
-package genetic_algorithm;
-
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
+import genetic_algorithm.GeneticAlgorithm;
+import genetic_algorithm.Individual;
+import genetic_algorithm.Population;
 import minimax.FeatureWeightNames;
 
 import java.io.IOException;

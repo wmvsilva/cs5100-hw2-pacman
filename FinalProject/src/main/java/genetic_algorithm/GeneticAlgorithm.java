@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static genetic_algorithm.Individual.MAX_WEIGHT;
 import static genetic_algorithm.Individual.MIN_WEIGHT;
 
-class GeneticAlgorithm
+public class GeneticAlgorithm
 {
     /**
      * In crossover, the chance that the child will receive the first parent's gene for a particular gene. If the
@@ -31,7 +31,7 @@ class GeneticAlgorithm
      * @param opposingPopulation the enemy of the given pop that pop will be tested against to determine fitness
      * @return population like the given pop but evolved
      */
-    static Population evolvePopulation(Population pop, Population opposingPopulation) {
+    public static Population evolvePopulation(Population pop, Population opposingPopulation) {
         Population newPopulation = new Population(pop.size(), false, pop.isPacManPop());
 
         // Elitism keeps the fittest individual from a generation and moves it to the next generation unchanged

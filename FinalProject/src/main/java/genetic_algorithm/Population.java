@@ -4,7 +4,7 @@ package genetic_algorithm;
  * A population of either Pac-Men or ghosts. In this population, it is possible to determine which of the individuals
  * are the fittest.
  */
-class Population
+public class Population
 {
     /**
      * The individuals of this population
@@ -20,7 +20,7 @@ class Population
      * @param initialize should the individuals in this population be created when this is constructed
      * @param isPacManPopulation should this be constructing a population of Pac-Men? (or ghosts?)
      */
-    Population(int populationSize, boolean initialize, boolean isPacManPopulation)
+    public Population(int populationSize, boolean initialize, boolean isPacManPopulation)
     {
         individuals = new Individual[populationSize];
         this.isPacManPop = isPacManPopulation;
@@ -59,7 +59,7 @@ class Population
      * @param opposingPopulation the opposing population to test this population against to determine fitness
      * @return the fittest individual from this population
      */
-    Individual getFittest(Population opposingPopulation)
+    public Individual getFittest(Population opposingPopulation)
     {
         Individual fittest = individuals[0];
         for (int i = 0; i < size(); i++) {

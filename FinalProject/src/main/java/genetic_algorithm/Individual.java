@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-abstract class Individual
+public abstract class Individual
 {
     /**
      * The minimum value that a gene can be
@@ -94,7 +94,7 @@ abstract class Individual
      * @param opposingPopulation opposing population to test this individual against
      * @return fitness of this individual (with higher numbers being more fit) by testing it against opposing population
      */
-    int getFitness(Population opposingPopulation)
+    public int getFitness(Population opposingPopulation)
     {
         if (!fitness.isPresent()) {
             fitness = Optional.of(getPersonalFitness(opposingPopulation));
@@ -105,7 +105,7 @@ abstract class Individual
     /**
      * @return the genes of this individual in map form
      */
-    Map<String, Integer> getGeneMap()
+    public Map<String, Integer> getGeneMap()
     {
         Map<String, Integer> geneMap = Maps.newHashMap();
         for (Pair pair : genes) {
