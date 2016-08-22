@@ -5,6 +5,8 @@ import entrants.pacman.silvaw.MyPacManMiniMax;
 import minimax.FileSettableHeuristic;
 import minimax.SettableHeuristic;
 import pacman.Executor;
+import pacman.controllers.Controller;
+import pacman.game.Constants;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -16,6 +18,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,8 +26,8 @@ public class CoevolutionResultEvaluator
 {
     public static void main(String[] args)
     {
-        String pacManFile = "pacman_2016-36-22_11-36-13.csv";
-        String ghostFile = "ghosts_2016-36-22_11-36-13.csv";
+        String pacManFile = "pacman_2016-44-22_11-44-17.csv";
+        String ghostFile = "ghosts_2016-44-22_11-44-17.csv";
 
         // Read file
         Path pacManFilePath = Paths.get(pacManFile);
@@ -52,10 +55,10 @@ public class CoevolutionResultEvaluator
             Map<String, Integer> pacManGenes = FileSettableHeuristic.fileLineToGeneMap(columns, pacManFileLines.get(i));
             Map<String, Integer> ghostGenes = FileSettableHeuristic.fileLineToGeneMap(columns, ghostFileLines.get(i));
 
-            Executor executor = new Executor(false, true);
-            int score = executor.runGame(
+            int score = (int) determineAverageScore(
                     new MyPacManMiniMax(new SettableHeuristic(pacManGenes)),
-                    new MyGhostsMiniMax(new SettableHeuristic(ghostGenes)), false, 0);
+                    new MyGhostsMiniMax(new SettableHeuristic(ghostGenes)));
+            System.out.println(i + "- " + score);
             scores.add(score);
         }
 
@@ -74,5 +77,17 @@ public class CoevolutionResultEvaluator
         } catch (IOException e) {
             Throwables.propagate(e);
         }
+    }
+
+    static double determineAverageScore(Controller<Constants.MOVE> pacManController,
+                                     Controller<EnumMap<Constants.GHOST, Constants.MOVE>> ghostController)
+    {
+        double totalScore = 0;
+        for (int i = 0; i < 10; i++) {
+            Executor executor = new Executor(false, true);
+            double score = (double) executor.runGame(pacManController, ghostController, false, 0);
+            totalScore += score;
+        }
+        return totalScore / 10.0;
     }
 }
