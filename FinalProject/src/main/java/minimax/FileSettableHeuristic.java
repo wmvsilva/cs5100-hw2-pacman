@@ -48,7 +48,7 @@ public class FileSettableHeuristic implements Heuristic
         List<String> columns = Arrays.asList(header.split(","));
 
         // Take the line we want to look at and split it into the column values
-        String currentLine = fileLines.get(fileLine + 1);
+        String currentLine = fileLines.get(fileLine - 1);
         Map<String, Integer> geneMap = fileLineToGeneMap(columns, currentLine);
 
         System.out.println("GeneMap: " + geneMap.toString());
