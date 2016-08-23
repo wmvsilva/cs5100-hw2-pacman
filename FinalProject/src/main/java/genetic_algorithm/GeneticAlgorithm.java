@@ -8,23 +8,18 @@ import static genetic_algorithm.Individual.MIN_WEIGHT;
 public class GeneticAlgorithm
 {
     /**
-     * In crossover, the chance that the child will receive the first parent's gene for a particular gene. If the
-     * first parent does not pass on its genes, then the second parent will pass on genes.
+     * Should we use elitism during evolution? (Should the most fit individual of a generation move on to the next
+     * generation unchanged?)
      */
-    private static final double UNIFORM_RATE = 0.5;
-    /**
-     * The chance that a given gene will mutate to a random value during evolution
-     */
-    private static final double MUTATION_RATE = 0.05;
+    private static final boolean ELITISM = true;
     /**
      * The size of the tournament to use in tournament selection
      */
     private static final int TOURNAMENT_SIZE = 5;
     /**
-     * Should we use elitism during evolution? (Should the most fit individual of a generation move on to the next
-     * generation unchanged?)
+     * The chance that a given gene will mutate to a random value during evolution
      */
-    private static final boolean ELITISM = true;
+    private static final double MUTATION_RATE = 0.05;
 
     /**
      * @param pop produces a pop like this pop but evolved to the next generation
@@ -79,7 +74,7 @@ public class GeneticAlgorithm
         }
 
         for (int i = 0; i < indiv1.size(); i++) {
-            if (Math.random() <= UNIFORM_RATE) {
+            if (Math.random() <= 0.5) {
                 newIndividual.setGene(i, indiv1.getGene(i));
             } else {
                 newIndividual.setGene(i, indiv2.getGene(i));

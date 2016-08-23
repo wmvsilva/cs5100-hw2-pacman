@@ -2,7 +2,7 @@
 
 ## Evolutionizer
 
-The Evolutionizer class is used to run the genetic algorithm. Following its completion, two files are saved: pacman_yyyy-mm-dd_hh-mm-ss.csv and ghost_yyyy-mm-dd_hh-mm-ss.csv. The pacman file contains the genes of the fittess Pac-Man individual from each generation in chronological order. The ghost file contains the genes of the fittess Ghost individual from each generation as well.
+The Evolutionizer class is used to run the genetic algorithm. Following its completion, two files are saved: pacman_yyyy-mm-dd_hh-mm-ss.csv and ghost_yyyy-mm-dd_hh-mm-ss.csv. The pacman file contains the genes of the fittest Pac-Man individual from each generation in chronological order. The ghost file contains the genes of the fittest Ghost individual from each generation as well.
 
 ### Running Evolutionizer
 
