@@ -8,7 +8,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * Runs a visible Ms. Pac-Man game with some pre-set settings
  */
-public class MainMiniMax
+public class MainMinimax
 {
     private static final String PAC_MAN_FILE = "pacman_sample_100generations.csv";
     private static final int PAC_MAN_FILE_LINE = 2;
