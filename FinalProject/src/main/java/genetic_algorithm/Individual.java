@@ -39,30 +39,6 @@ public abstract class Individual
     abstract public int getPersonalFitness(Population opposingPopulation);
 
     /**
-     * @return genes in which all values are set to 0
-     */
-    private static List<Pair> generateEmptyGenes()
-    {
-        List<Pair> emptyGenes = Lists.newArrayList();
-        for (String geneName : FeatureWeightNames.getNames()) {
-            emptyGenes.add(new Pair(geneName, 0));
-        }
-        return emptyGenes;
-    }
-
-    /**
-     * Set this individual to have random gene values in the allowed range
-     */
-    void generateIndividual()
-    {
-        // Clear the existing genes first
-        genes.clear();
-        for (String geneName : FeatureWeightNames.getNames()) {
-            genes.add(new Pair(geneName, ThreadLocalRandom.current().nextInt(MIN_WEIGHT, MAX_WEIGHT + 1)));
-        }
-    }
-
-    /**
      * @param index get the gene at this index
      * @return return the value of the gene at the given index
      */
@@ -83,14 +59,6 @@ public abstract class Individual
     }
 
     /**
-     * @return number of genes that this individual has
-     */
-    public int size()
-    {
-        return genes.size();
-    }
-
-    /**
      * @param opposingPopulation opposing population to test this individual against
      * @return fitness of this individual (with higher numbers being more fit) by testing it against opposing population
      */
@@ -100,6 +68,38 @@ public abstract class Individual
             fitness = Optional.of(getPersonalFitness(opposingPopulation));
         }
         return fitness.get();
+    }
+
+    /**
+     * Set this individual to have random gene values in the allowed range
+     */
+    void generateIndividual()
+    {
+        // Clear the existing genes first
+        genes.clear();
+        for (String geneName : FeatureWeightNames.getNames()) {
+            genes.add(new Pair(geneName, ThreadLocalRandom.current().nextInt(MIN_WEIGHT, MAX_WEIGHT + 1)));
+        }
+    }
+
+    /**
+     * @return genes in which all values are set to 0
+     */
+    private static List<Pair> generateEmptyGenes()
+    {
+        List<Pair> emptyGenes = Lists.newArrayList();
+        for (String geneName : FeatureWeightNames.getNames()) {
+            emptyGenes.add(new Pair(geneName, 0));
+        }
+        return emptyGenes;
+    }
+
+    /**
+     * @return number of genes that this individual has
+     */
+    public int size()
+    {
+        return genes.size();
     }
 
     /**

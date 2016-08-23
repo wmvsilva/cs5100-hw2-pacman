@@ -25,41 +25,19 @@ public class GeneticAlgorithm
     private static final double MUTATION_RATE = 0.05;
 
     /**
-     * @param pop produces a pop like this pop but evolved to the next generation
-     * @param opposingPopulation the enemy of the given pop that pop will be tested against to determine fitness
-     * @return population like the given pop but evolved
+     * @param pop population from which to select an individual
+     * @param opposingPopulation opposing population (such as ghosts if given pop is PacMan) to use to determine fitness
+     *                           of pop if necessary
+     * @return an individual from pop selected using tournament selection
      */
-    public static Population evolvePopulation(Population pop, Population opposingPopulation) {
-        Population newPopulation = new Population(pop.size(), false, pop.isPacManPop());
-
-        // Elitism keeps the fittest individual from a generation and moves it to the next generation unchanged
-        if (ELITISM) {
-            Individual elite = pop.getFittest(opposingPopulation);
-            // Fitness must be reset so it will be recalculated
-            elite.resetFitness();
-            newPopulation.saveIndividual(0, pop.getFittest(opposingPopulation));
+    private static Individual tournamentSelection(Population pop, Population opposingPopulation) {
+        Population tournament = new Population(TOURNAMENT_SIZE, false, pop.isPacManPop());
+        for (int i = 0; i < TOURNAMENT_SIZE; i++) {
+            int randomIndex = (int) (Math.random() * pop.size());
+            tournament.saveIndiv(i, pop.getIndividual(randomIndex));
         }
 
-        int elitismOffset;
-        if (ELITISM) {
-            elitismOffset = 1;
-        } else {
-            elitismOffset = 0;
-        }
-        // Produce a new population through crossover
-        for (int i = elitismOffset; i < pop.size(); i++) {
-            Individual indiv1 = tournamentSelection(pop, opposingPopulation);
-            Individual indiv2 = tournamentSelection(pop, opposingPopulation);
-            Individual newIndiv = crossover(indiv1, indiv2, pop.isPacManPop());
-            newPopulation.saveIndividual(i, newIndiv);
-        }
-
-        // Mutate some genes of the new population
-        for (int i = elitismOffset; i < newPopulation.size(); i++) {
-            mutate(newPopulation.getIndividual(i));
-        }
-
-        return newPopulation;
+        return tournament.getFittest(opposingPopulation);
     }
 
     /**
@@ -99,18 +77,40 @@ public class GeneticAlgorithm
     }
 
     /**
-     * @param pop population from which to select an individual
-     * @param opposingPopulation opposing population (such as ghosts if given pop is PacMan) to use to determine fitness
-     *                           of pop if necessary
-     * @return an individual from pop selected using tournament selection
+     * @param pop produces a pop like this pop but evolved to the next generation
+     * @param opposingPopulation the enemy of the given pop that pop will be tested against to determine fitness
+     * @return population like the given pop but evolved
      */
-    private static Individual tournamentSelection(Population pop, Population opposingPopulation) {
-        Population tournament = new Population(TOURNAMENT_SIZE, false, pop.isPacManPop());
-        for (int i = 0; i < TOURNAMENT_SIZE; i++) {
-            int randomId = (int) (Math.random() * pop.size());
-            tournament.saveIndividual(i, pop.getIndividual(randomId));
+    public static Population evolvePopulation(Population pop, Population opposingPopulation) {
+        Population newPopulation = new Population(pop.size(), false, pop.isPacManPop());
+
+        // Elitism keeps the fittest individual from a generation and moves it to the next generation unchanged
+        if (ELITISM) {
+            Individual mostFit = pop.getFittest(opposingPopulation);
+            // Fitness must be reset so it will be recalculated
+            mostFit.resetFitness();
+            newPopulation.saveIndiv(0, pop.getFittest(opposingPopulation));
         }
 
-        return tournament.getFittest(opposingPopulation);
+        int offset;
+        if (ELITISM) {
+            offset = 1;
+        } else {
+            offset = 0;
+        }
+        // Produce a new population through crossover
+        for (int i = offset; i < pop.size(); i++) {
+            Individual indiv1 = tournamentSelection(pop, opposingPopulation);
+            Individual indiv2 = tournamentSelection(pop, opposingPopulation);
+            Individual babyIndividual = crossover(indiv1, indiv2, pop.isPacManPop());
+            newPopulation.saveIndiv(i, babyIndividual);
+        }
+
+        // Mutate some genes of the new population
+        for (int i = offset; i < newPopulation.size(); i++) {
+            mutate(newPopulation.getIndividual(i));
+        }
+
+        return newPopulation;
     }
 }

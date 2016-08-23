@@ -17,14 +17,15 @@ public class Population
 
     /**
      * @param populationSize number of individuals to create in this population
-     * @param initialize should the individuals in this population be created when this is constructed
+     * @param shouldInitialize should the individuals in this population be created when this is constructed
      * @param isPacManPopulation should this be constructing a population of Pac-Men? (or ghosts?)
      */
-    public Population(int populationSize, boolean initialize, boolean isPacManPopulation)
+    public Population(int populationSize, boolean shouldInitialize, boolean isPacManPopulation)
     {
         individuals = new Individual[populationSize];
         this.isPacManPop = isPacManPopulation;
-        if (initialize) {
+
+        if (shouldInitialize) {
             for (int i = 0; i < size(); i++) {
                 Individual newIndividual;
                 if (isPacManPopulation) {
@@ -44,6 +45,23 @@ public class Population
     boolean isPacManPop()
     {
         return isPacManPop;
+    }
+
+    /**
+     * @return the number of individuals in this population
+     */
+    public int size()
+    {
+        return individuals.length;
+    }
+
+    /**
+     * @param index the index to save this individual at
+     * @param indiv the individual to put in this population
+     */
+    void saveIndiv(int index, Individual indiv)
+    {
+        individuals[index] = indiv;
     }
 
     /**
@@ -68,22 +86,5 @@ public class Population
             }
         }
         return fittest;
-    }
-
-    /**
-     * @return the number of individuals in this population
-     */
-    public int size()
-    {
-        return individuals.length;
-    }
-
-    /**
-     * @param index the index to save this individual at
-     * @param indiv the individual to put in this population
-     */
-    void saveIndividual(int index, Individual indiv)
-    {
-        individuals[index] = indiv;
     }
 }
