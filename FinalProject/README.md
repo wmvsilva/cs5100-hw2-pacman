@@ -12,12 +12,12 @@ To actually run the class, simply run the Evolutionizer's main method. The conso
 
 The two files produced by running Evolutionizer can be used with MainMiniMax.java.
 
-## MainMiniMax.java
+## MainMinimax.java
 
-To run the files produced by running Evolutionizer.java, one can run MainMiniMax.java. By specifying the filenames of the pacman and ghost files as well as the file line of the genes to use in each file, one can run different generations of Pac-Men and ghosts. MainMiniMax.java runs a visible Ms. Pac-Man game at normal speed.
+To run the files produced by running Evolutionizer.java, one can run MainMinimax.java. By specifying the filenames of the pacman and ghost files as well as the file line of the genes to use in each file, one can run different generations of Pac-Men and ghosts. MainMinimax.java runs a visible Ms. Pac-Man game at normal speed.
 
-### Running MainMiniMax
+### Running MainMinimax
 
-First, open MainMiniMax.java in your IDE. Just like with the Evolutionizer class, the FinalProject folder must be added as a Maven project. To change the file that contains the Pac-Man genes, change the static variable called PAC_MAN_FILE. Each set of genes is on a separate line. To change the genes, or line number used, for Pac-Man, change the static variable PAC_MAN_FILE_LINE. To change the file that contains the ghost genes, change the static variable called GHOST_FILE. To change the line number of the genes to use in the ghost file, change the static variable GHOST_FILE_LINE.
+First, open MainMinimax.java in your IDE. Just like with the Evolutionizer class, the FinalProject folder must be added as a Maven project. To change the file that contains the Pac-Man genes, change the static variable called PAC_MAN_FILE. Each set of genes is on a separate line. To change the genes, or line number used, for Pac-Man, change the static variable PAC_MAN_FILE_LINE. To change the file that contains the ghost genes, change the static variable called GHOST_FILE. To change the line number of the genes to use in the ghost file, change the static variable GHOST_FILE_LINE.
 
-Finally, now that your variables are set, just run the main method of MainMiniMax.java and a window running Ms. Pac-Man will appear which has the Pac-Man competing against the ghosts, with both parties using the specified feature weights in the genes.
+Finally, now that your variables are set, just run the main method of MainMinimax.java and a window running Ms. Pac-Man will appear which has the Pac-Man competing against the ghosts, with both parties using the specified feature weights in the genes.
