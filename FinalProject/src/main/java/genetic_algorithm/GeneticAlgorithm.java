@@ -5,6 +5,9 @@ import java.util.concurrent.ThreadLocalRandom;
 import static genetic_algorithm.Individual.MAX_WEIGHT;
 import static genetic_algorithm.Individual.MIN_WEIGHT;
 
+/**
+ * Static class which is used to evolve a population
+ */
 public class GeneticAlgorithm
 {
     /**

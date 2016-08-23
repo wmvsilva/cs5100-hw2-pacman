@@ -47,7 +47,7 @@ public class CoevolutionResultEvaluator
             scores.add(score);
         }
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd_hh-mm-ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss");
         String strDate = dateFormat.format(new Date());
 
         List<String> scoreStrings = Lists.newArrayList();
@@ -76,8 +76,8 @@ public class CoevolutionResultEvaluator
         return fileLines;
     }
 
-    static double determineAverageScore(Controller<Constants.MOVE> pacManController,
-                                     Controller<EnumMap<Constants.GHOST, Constants.MOVE>> ghostController)
+    private static double determineAverageScore(Controller<Constants.MOVE> pacManController,
+                                                Controller<EnumMap<Constants.GHOST, Constants.MOVE>> ghostController)
     {
         double totalScore = 0;
         for (int i = 0; i < 10; i++) {

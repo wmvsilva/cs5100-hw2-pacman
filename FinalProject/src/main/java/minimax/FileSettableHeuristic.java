@@ -56,6 +56,12 @@ public class FileSettableHeuristic implements Heuristic
         this.settableHeuristic = new SettableHeuristic(geneMap);
     }
 
+    /**
+     * @param columns the names of all the features
+     * @param currentLine a comma-separated list of integers with each integer representing the weight of a feature
+     *                    in the given columns list
+     * @return a map of feature names to weights for those features
+     */
     public static Map<String, Integer> fileLineToGeneMap(List<String> columns, String currentLine)
     {
         List<String> columnValues = Arrays.asList(currentLine.split(","));

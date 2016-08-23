@@ -104,7 +104,7 @@ public class Evolutionizer
             fileLines.add(fileLine);
         }
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd_hh-mm-ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss");
         String strDate = dateFormat.format(new Date());
 
         // Save file
