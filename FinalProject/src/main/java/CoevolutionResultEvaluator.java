@@ -102,7 +102,7 @@ public class CoevolutionResultEvaluator
             double score = (double) executor.runGame(pacManController, ghostController, false, 0);
             totalScore += score;
         }
-        return totalScore / 10.0;
+        return totalScore / (double) NUM_OF_GAMES_TO_RUN_PER_GENERATION;
     }
 
     /**
