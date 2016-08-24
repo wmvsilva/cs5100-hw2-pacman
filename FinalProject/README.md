@@ -10,7 +10,7 @@ Instructions for how to run this project are below.
 
 ## Evolutionizer.java
 
-The `Evolutionizer` class is used to run the genetic algorithm. Following its completion, two files are saved: `pacman_yyyy-MM-dd_hh-mm-ss.csv` and `ghost_yyyy-MM-dd_hh-mm-ss.csv`. The pacman file contains the genes of the fittest Pac-Man individual from each generation in chronological order. The ghost file contains the genes of the fittest Ghost individual from each generation as well.
+The `Evolutionizer` class is used to run the genetic algorithms and have populations of Pac-Man and ghosts evolve against one another for a specified number of generations. Following its completion, two files are saved: `pacman_yyyy-MM-dd_hh-mm-ss.csv` and `ghost_yyyy-MM-dd_hh-mm-ss.csv`. The pacman file contains the genes of the fittest Pac-Man individual from each generation in chronological order. The ghost file contains the genes of the fittest Ghost individual from each generation as well. Example results of running this class with 100 generations are provided by `pacman_sample_100generations.csv` and `ghosts_sample_100generations.csv`.
 
 ### Running Evolutionizer
 
@@ -18,7 +18,7 @@ To run the `Evolutionizer` class, simply open up FinalProject as a Maven project
 
 To actually run the class, simply run the `Evolutionizer`'s `main` method. The console will print game scores each time the fitness of an individual is calculated and whenever a generation of Pac-Men or ghosts is completed.
 
-The two files produced by running `Evolutionizer` can be used with `MainMiniMax.java`.
+The two files produced by running `Evolutionizer` can be used with `MainMinimax.java` to build Pac-Men and ghosts using the genes recorded in the file and have them compete in a visual game of Ms. Pac-Man at normal speed.
 
 ---
 
@@ -28,7 +28,7 @@ To run the files produced by running `Evolutionizer.java`, one can run `MainMini
 
 ### Running MainMinimax
 
-First, open `MainMinimax.java` in your IDE. Just like with the `Evolutionizer` class, the FinalProject folder must be added as a Maven project. To change the file that contains the Pac-Man genes, change the static variable called `PAC_MAN_FILE`. Each set of genes is on a separate line. To change the genes, or line number used, for Pac-Man, change the static variable `PAC_MAN_FILE_LINE`. To change the file that contains the ghost genes, change the static variable called `GHOST_FILE`. To change the line number of the genes to use in the ghost file, change the static variable `GHOST_FILE_LINE`.
+First, open `MainMinimax.java` in your IDE. Just like with the `Evolutionizer` class, the FinalProject folder must be added as a Maven project. To change the file that contains the Pac-Man genes, change the static variable called `PAC_MAN_FILE`. Each set of genes is on a separate line. To change the genes, or line number used, for Pac-Man, change the static variable `PAC_MAN_FILE_LINE`. To change the file that contains the ghost genes, change the static variable called `GHOST_FILE`. To change the line number of the genes to use in the ghost file, change the static variable `GHOST_FILE_LINE`. Note that the defaults of these static variables are set to the first generations of the sample files `pacman_sample_100generations.csv` and `ghosts_sample_100generations.csv`.
 
 Finally, now that your variables are set, just run the main method of `MainMinimax.java` and a window running Ms. Pac-Man will appear which has the Pac-Man competing against the ghosts, with both parties using the specified feature weights in the genes.
 
@@ -36,11 +36,11 @@ Finally, now that your variables are set, just run the main method of `MainMinim
 
 ## CoevolutionResultEvaluator.java
 
-One may want to see how the scores between the evolving Pac-Men and ghosts change over time. To do this, one may use the files produced by `Evolutionizer.java` and provide them to this class which will take the Pac-Man population and ghost population of each generation and run them against one another several times. The average score is recorded and after all generations have been processed, a CSV file named `score_yyyy-MM-dd_hh-mm-ss.csv` is saved which contains the generation number in the first column and the average score in the second column. This CSV file can be used for later analysis.
+One may want to see how the scores between the evolving Pac-Men and ghosts change over time. To do this, one may use the files produced by `Evolutionizer.java` and provide them to this class which will take the Pac-Man population and ghost population of each generation and run them against one another several times. The average score is recorded and after all generations have been processed, a CSV file named `score_yyyy-MM-dd_hh-mm-ss.csv` is saved which contains the generation number in the first column and the average score in the second column. This CSV file can be used for later analysis. A sample result is provided at `sample_results/score_sample_100generations.csv` which was produced by running this class with the sample files `pacman_sample_100generations.csv` and `ghosts_sample_100generations.csv` as inputs.
 
 ### Running CoevolutionResultEvaluator
 
-First, open up `CoevolutionResultEvaluator.java` in your IDE. One should change the static variable `PAC_MAN_FILE` to the Pac-Man file produced by running the `Evolutionizer` that they'd like to use. Next, you should change the static variable `GHOST_FILE` to the ghost file produced by running the `Evolutionizer`. Note that you should not be mixing together files from different runs of `Evolutionizer`. For example, running a Pac-Man file with 10 generations and a ghost file with 100 generations in this class will cause an error.
+First, open up `CoevolutionResultEvaluator.java` in your IDE. One should change the static variable `PAC_MAN_FILE` to the pacman file produced by running the `Evolutionizer` that they'd like to use. Next, you should change the static variable `GHOST_FILE` to the ghost file produced by running the `Evolutionizer`. Note that you should not be mixing together files from different runs of `Evolutionizer`. For example, running a Pac-Man file with 10 generations and a ghost file with 100 generations in this class will cause an error.
 
 After you have set the variables, simply run the `main` method. The console will print the generation and the average score as each generation completes. After the main method has completed, a file called `score_yyyy-MM-dd_hh-mm-ss.csv` will be saved in the FinalProject folder.
 
@@ -48,7 +48,7 @@ After you have set the variables, simply run the `main` method. The console will
 
 ## TestPacManAgainstStaticControllers.java
 
-You may want to test the Pac-Man of each generation produced by `Evolutionizer` against some static ghost controllers to see the improvements over time. Using the `TestPacManAgainstStaticControllers` class allows you to take a file produced by `Evolutionizer` and run it against the Aggressive, Legacy, Legacy2, Random, and Starter ghosts provided by the Ms. Pac-Man AI library. Each generation of Pac-Man competes against each ghost controller some number of times and the average is recorded. After all the generations have been iterated through, a file named `evolved_pacman_vs_static_ghosts_yyyy-MM-dd_hh-mm-ss.csv` is produced which contains the average score against each controller for each generation.
+You may want to test the Pac-Man of each generation produced by `Evolutionizer` against some static ghost controllers to see the improvements over time. Using the `TestPacManAgainstStaticControllers` class allows you to take a file produced by `Evolutionizer` and run it against the Aggressive, Legacy, Legacy2, Random, and Starter ghosts provided by the Ms. Pac-Man AI library. Each generation of Pac-Man competes against each ghost controller some number of times and the average is recorded. After all the generations have been iterated through, a file named `evolved_pacman_vs_static_ghosts_yyyy-MM-dd_hh-mm-ss.csv` is produced which contains the average score against each controller for each generation. An example result produced by running this class with `pacman_sample_100generations.csv` is provided at `sample_results/evolved_pacman_vs_static_ghosts_sample_100generations.csv`.
 
 ### Running TestPacManAgainstStaticControllers
 
@@ -58,7 +58,7 @@ First, open up `TestPacManAgainstStaticControllers.java` in your IDE. Set the st
 
 ## TestGhostsAgainstStaticControllers.java
 
-You may want to test the ghosts of each generation produced by `Evolutionizer` against some static pac-man controllers to see the improvements over time. Using the `TestGhostsAgainstStaticControllers` class allows you to take a file produced by `Evolutionizer` and run it against the Generation,Nearest Pill,Random,Random NonRev,Starter Pacman provided by the Ms. Pac-Man AI library. Each generation of ghost competes against each Pac-man controller some number of times and the average is recorded. After all the generations have been iterated through, a file named `evolved_ghosts_vs_static_pacman_yyyy-MM-dd_hh-mm-ss.csv` is produced which contains the average score against each controller for each generation.
+You may want to test the ghosts of each generation produced by `Evolutionizer` against some static pac-man controllers to see the improvements over time. Using the `TestGhostsAgainstStaticControllers` class allows you to take a file produced by `Evolutionizer` and run it against the Generation,Nearest Pill,Random,Random NonRev,Starter Pacman provided by the Ms. Pac-Man AI library. Each generation of ghost competes against each Pac-man controller some number of times and the average is recorded. After all the generations have been iterated through, a file named `evolved_ghosts_vs_static_pacman_yyyy-MM-dd_hh-mm-ss.csv` is produced which contains the average score against each controller for each generation. An example result produced by running this class with `ghosts_sample_100generations.csv` is provided at `sample_results/evolved_ghosts_vs_static_pacman_sample_100generations.csv`.
 
 ### Running TestGhostsAgainstStaticControllers
 
