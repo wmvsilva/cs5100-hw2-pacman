@@ -75,7 +75,7 @@ public class CoevolutionResultEvaluator
      * @param filename the name of the file to read
      * @return the contents of the file as a list of strings
      */
-    private static List<String> readFile(String filename)
+    static List<String> readFile(String filename)
     {
         Path filePath = Paths.get(filename);
 
@@ -93,8 +93,8 @@ public class CoevolutionResultEvaluator
      * @param ghostController ghost controller to run games with
      * @return runs some number of Ms. Pac-Man games using the given controllers and returns the average score
      */
-    private static double determineAverageScore(Controller<Constants.MOVE> pacManController,
-                                                Controller<EnumMap<Constants.GHOST, Constants.MOVE>> ghostController)
+    static double determineAverageScore(Controller<Constants.MOVE> pacManController,
+                                        Controller<EnumMap<Constants.GHOST, Constants.MOVE>> ghostController)
     {
         double totalScore = 0;
         for (int i = 0; i < NUM_OF_GAMES_TO_RUN_PER_GENERATION; i++) {
