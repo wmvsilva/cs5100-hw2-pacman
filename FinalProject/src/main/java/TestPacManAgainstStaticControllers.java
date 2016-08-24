@@ -24,10 +24,19 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Tests the Pac-Man of each generation produced by {@link Evolutionizer} against some static ghost controllers to
+ * see the improvements over time
+ */
 public class TestPacManAgainstStaticControllers
 {
     private static final String PAC_MAN_FILE = "pacman_sample_100generations.csv";
 
+    /**
+ * Tests each Pac-Man gene in the specified file against several static controllers and saves the results to a file
+ *
+ * @param ignored ignored arguments
+ */
     public static void main(String[] ignored)
     {
         // Read files into memory
@@ -41,6 +50,7 @@ public class TestPacManAgainstStaticControllers
         ghostControllers.add(new RandomGhosts());
         ghostControllers.add(new StarterGhosts());
 
+        // Header of file to be produced
         String newFileHeader = "Generation,Aggressive,Legacy,Legacy2,Random,Starter";
 
         // Determine the ordering of the features
@@ -50,9 +60,11 @@ public class TestPacManAgainstStaticControllers
         // For each generation, run some number of games and record the average score.
         List<List<Integer>> scores = Lists.newArrayList();
         for (int i = 1; i < pacManFileLines.size(); i++) {
-            Map<String, Integer> pacManGenes = FileSettableHeuristic.fileLineToGeneMap(columns, pacManFileLines.get(i));
 
+            Map<String, Integer> pacManGenes = FileSettableHeuristic.fileLineToGeneMap(columns, pacManFileLines.get(i));
             List<Integer> generationResults = Lists.newArrayList();
+
+            // Run this generation's genes against all static controllers
             int j = 0;
             for (Controller<EnumMap<Constants.GHOST, Constants.MOVE>> ghostController : ghostControllers) {
                 String ghostControllerName = newFileHeader.split(",")[j + 1];
@@ -61,6 +73,7 @@ public class TestPacManAgainstStaticControllers
                         new MyPacManMiniMax(new SettableHeuristic(pacManGenes)),
                         ghostController);
                 System.out.println("Generation-" + i + "-" + ghostControllerName + "-" + " AVG SCORE: " + score);
+
                 generationResults.add(score);
                 j++;
             }
@@ -70,6 +83,13 @@ public class TestPacManAgainstStaticControllers
         saveScoresToFile(newFileHeader, scores);
     }
 
+    /**
+     * Saves the list of lists of average scores to a file with the name
+     * evolved_pacman_vs_static_ghosts_yyyy-MM-dd_hh-mm-ss.csv
+     *
+     * @param headerLine header to use in file
+     * @param scores list of lists of average scores against each static controller
+     */
     private static void saveScoresToFile(String headerLine, List<List<Integer>> scores)
     {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss");
