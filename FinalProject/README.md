@@ -1,5 +1,11 @@
 # Final Project User Manual
 
+The FinalProject project is the CS 5100 final project which provides a system for competitive coevolution in Ms. Pac-Man between Pac-Man and the ghosts. Instructions for how to run this project are below.
+
+Requirements:
+- Java 7
+- Maven
+
 ## Evolutionizer.java
 
 The `Evolutionizer` class is used to run the genetic algorithm. Following its completion, two files are saved: `pacman_yyyy-MM-dd_hh-mm-ss.csv` and `ghost_yyyy-MM-dd_hh-mm-ss.csv`. The pacman file contains the genes of the fittest Pac-Man individual from each generation in chronological order. The ghost file contains the genes of the fittest Ghost individual from each generation as well.
